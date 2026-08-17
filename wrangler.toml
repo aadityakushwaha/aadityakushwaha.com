@@ -8,7 +8,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "aadityakushwaha-site"
-database_id = "PASTE_DATABASE_ID_HERE"
+database_id = "b79f72bd-ae70-40d6-b2f1-4dd7309d44f1"
 
 [vars]
 NOTIFY_TO = "work.aadityak@gmail.com"
