@@ -442,17 +442,84 @@ const now = [
     <div class="relative">
       <p data-rise class="font-body text-xs uppercase tracking-[0.25em] text-sage">Open to remote work — available now</p>
 
+      <h2 data-rise class="mt-5 max-w-[14ch] font-display text-[11vw] font-black uppercase leading-[0.88] tracking-[-0.03em] md:text-[5.4vw]">
+        Start a conversation
+      </h2>
+
       <!--
-        The link text is the address itself. "Say hello" reads nicely but does
-        not tell anyone what the click does; an email link should show the email.
+        Form left, plate right. The form is the only thing on this page asking
+        for effort, so it gets the reading column and the plate stays a quiet
+        companion — it explains where the message goes, it does not compete.
       -->
-      <a href="mailto:work.aadityak@gmail.com"
-        class="mt-5 block break-words font-display text-[8.5vw] font-black uppercase leading-[0.92] tracking-[-0.03em] transition-colors hover:text-sage md:text-[5.4vw]">
-        work.aadityak@gmail.com
-      </a>
-      <p data-rise class="mt-4 max-w-[52ch] font-body text-sm text-bone-dim">
-        Opens your mail app — or copy the address. I read everything and reply within a day.
-      </p>
+      <div class="mt-10 grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+      <form id="contact-form" data-rise class="grid gap-5 md:grid-cols-2 lg:col-span-7" novalidate>
+        <div class="md:col-span-1">
+          <label for="cf-name" class="mb-2 block font-body text-xs uppercase tracking-[0.18em] text-muted">
+            Name <span class="text-sage" aria-hidden="true">*</span>
+          </label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required class="field" />
+          <p class="err" data-err-for="name" role="alert"></p>
+        </div>
+
+        <div class="md:col-span-1">
+          <label for="cf-email" class="mb-2 block font-body text-xs uppercase tracking-[0.18em] text-muted">
+            Email <span class="text-sage" aria-hidden="true">*</span>
+          </label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required class="field" />
+          <p class="err" data-err-for="email" role="alert"></p>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="cf-company" class="mb-2 block font-body text-xs uppercase tracking-[0.18em] text-muted">
+            Company <span class="normal-case tracking-normal text-muted">(optional)</span>
+          </label>
+          <input id="cf-company" name="company" type="text" autocomplete="organization" class="field" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="cf-message" class="mb-2 block font-body text-xs uppercase tracking-[0.18em] text-muted">
+            Message <span class="text-sage" aria-hidden="true">*</span>
+          </label>
+          <textarea id="cf-message" name="message" rows="5" required class="field resize-y"
+            placeholder="What are you building, and where do you need help?"></textarea>
+          <p class="err" data-err-for="message" role="alert"></p>
+        </div>
+
+        <!-- Honeypot. Hidden from people, irresistible to bots. -->
+        <div class="hp" aria-hidden="true">
+          <label for="cf-website">Website</label>
+          <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="flex flex-wrap items-center gap-5 md:col-span-2">
+          <button type="submit" class="btn"><span data-label>Send message</span></button>
+          <p class="font-body text-sm text-bone-dim">
+            Or email
+            <a class="ul" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a>
+            — I reply within a day.
+          </p>
+        </div>
+
+        <p id="cf-status" class="font-body text-sm md:col-span-2" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- Companion plate: what happens to the message once it is sent. -->
+      <figure data-rise class="hidden lg:col-span-5 lg:block">
+        <!--
+          Mask on the wrapper, not the image. With the mask on the image the
+          overflow clip lands first and leaves a hard edge exactly where the
+          fade was supposed to be.
+        -->
+        <div class="dissolve-all relative h-[32rem] overflow-hidden">
+          <img data-drift src="/img/contact-plate.png" alt="" aria-hidden="true"
+            class="absolute inset-0 h-[120%] w-full object-cover opacity-80" width="896" height="1195" loading="lazy" />
+        </div>
+        <figcaption class="mt-5 border-t border-hair pt-4 font-body text-[13px] leading-relaxed text-bone-dim">
+          Every message lands in a table first and mails me second, so a mail provider
+          having a bad afternoon can't lose it. Written the same way I'd write it at work.
+        </figcaption>
+      </figure>
+      </div>
 
       <div data-group class="mt-12 grid gap-8 border-t border-hair pt-7 md:grid-cols-3">
         <div>

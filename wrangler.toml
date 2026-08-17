@@ -1,0 +1,18 @@
+name = "aadityakushwaha-com"
+compatibility_date = "2026-08-17"
+pages_build_output_dir = "dist"
+
+# Where contact messages land. Create the database once with
+#   npx wrangler d1 create aadityakushwaha-site
+# then paste the returned id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "aadityakushwaha-site"
+database_id = "PASTE_DATABASE_ID_HERE"
+
+[vars]
+NOTIFY_TO = "work.aadityak@gmail.com"
+NOTIFY_FROM = "site@aadityakushwaha.com"
+
+# RESEND_API_KEY is a secret, never a var:
+#   npx wrangler pages secret put RESEND_API_KEY
