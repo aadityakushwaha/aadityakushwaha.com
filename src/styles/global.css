@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/*
+ * Bone on near-black. The ground is tinted green rather than neutral so the
+ * sage structural colour reads as part of the same family instead of an accent
+ * dropped on top — and so it never becomes the cyan-on-charcoal default.
+ */
+@theme {
+  --color-ground: #0b0c0b;
+  --color-raise: #121513;
+  --color-bone: #e4e0d3;
+  --color-bone-dim: #a8a698;
+  --color-muted: #6f7871;
+  --color-sage: #5f8c82;
+  --color-hair: #222724;
+
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Instrument Serif", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-ground);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-bone);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-sage);
+    color: var(--color-ground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-sage);
+    outline-offset: 3px;
+  }
+}
+
+/* ---------------------------------------------------------------- texture */
+/* One fractal-noise layer over the whole page. Kept at 3.5% so it reads as
+   film grain rather than a pattern — it stops large flat black areas from
+   banding on cheap panels. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------- reveals */
+/* Every animated element starts in its resting state and is moved OUT of it by
+   .pre — so if JS never runs, the page is simply readable rather than blank. */
+.pre {
+  opacity: 0;
+  transform: translateY(var(--pre-y, 1.1rem));
+}
+
+.in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+/* Line-by-line mask reveal for the hero. The span is pushed below its own
+   overflow-hidden parent, so the text appears to rise out of the baseline. */
+.mask {
+  overflow: hidden;
+  display: block;
+}
+.mask > span {
+  display: block;
+  transform: translateY(105%);
+}
+.mask.in > span {
+  transform: none;
+  transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+/* ---------------------------------------------------------------- marquee */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: slide 42s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+@keyframes slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------------------------------------------------------------- loader */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--color-ground);
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+#loader.done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------------ link rules */
+/* An underline that grows from the left on hover — cheaper and calmer than a
+   colour change, and it survives on a background this dark. */
+.ul {
+  background-image: linear-gradient(var(--color-sage), var(--color-sage));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ul:hover,
+.ul:focus-visible {
+  background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pre { opacity: 1; transform: none; }
+  .mask > span { transform: none; }
+  .marquee { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
