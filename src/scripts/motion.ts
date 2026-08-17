@@ -165,6 +165,50 @@ ready(() => {
     });
   }
 
+  /* ------------------------------------------------- hero container open */
+  // The frame expands from inset+rounded to full bleed across the hero's own
+  // scroll range, so the container is the transition rather than a decoration.
+  const frame = document.querySelector<HTMLElement>("[data-frame]");
+  const heroSection = document.querySelector("[data-hero-section]");
+  if (frame && heroSection) {
+    const wide = matchMedia("(min-width: 768px)").matches;
+    const from = wide ? "inset(1.75rem round 2rem)" : "inset(1.4rem round 1.6rem)";
+    scroll(animate(frame, { clipPath: [from, "inset(0rem round 0rem)"] }, { ease: "linear" }), {
+      target: heroSection,
+      offset: ["start start", "45% start"],
+    });
+  }
+
+  /* ------------------------------------------------------ stack text loop */
+  const stack = document.querySelector<HTMLElement>("[data-stack]");
+  if (stack) {
+    const items = [...stack.querySelectorAll<HTMLElement>(".stack-item")];
+    if (items.length > 1) {
+      items.forEach((el, i) => {
+        el.style.opacity = i === 0 ? "1" : "0";
+        el.style.transform = i === 0 ? "none" : "translateY(100%)";
+      });
+
+      let i = 0;
+      const HOLD = 2200;
+      const step = () => {
+        const cur = items[i];
+        const next = items[(i + 1) % items.length];
+        // Out and in run together — a gap between them reads as a stutter.
+        animate(cur, { y: ["0%", "-105%"], opacity: [1, 0] }, { duration: 0.55, ease: OUT });
+        animate(next, { y: ["105%", "0%"], opacity: [0, 1] }, { duration: 0.6, ease: OUT });
+        i = (i + 1) % items.length;
+      };
+      let timer = setInterval(step, HOLD);
+      // Pause when the tab is hidden; an interval animating offscreen is pure
+      // battery cost and drifts out of sync on return.
+      document.addEventListener("visibilitychange", () => {
+        clearInterval(timer);
+        if (!document.hidden) timer = setInterval(step, HOLD);
+      });
+    }
+  }
+
   /* ------------------------------------------------------ counting stats */
   inView(
     "[data-num]",

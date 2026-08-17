@@ -4,6 +4,19 @@ title: "61% of AI-authored pull requests are never reviewed"
 description: "A study of 33,596 agent-written PRs found most receive no recorded review. The diff isn't what's missing — the reasoning is."
 date: 2026-08-17
 status: "8 min read"
+kicker: "Postmortem — agent workflows"
+hero: "/img/post-hero.png"
+figure: "/img/post-fig.png"
+figureAlt: "Merges land; the reasoning that produced them does not."
+panels:
+  - label: "Agent PRs with no recorded review"
+    value: "61.4%"
+  - label: "Reviewed only by other agents"
+    value: "22.6%"
+  - label: "Any human participation"
+    value: "15.9%"
+  - label: "PRs analysed"
+    value: "33,596"
 ---
 
 A study presented at EASE 2026 looked at 33,596 agent-authored pull requests across GitHub repositories with at least 100 stars. The headline number is uncomfortable:
@@ -23,7 +36,7 @@ But that distinction is the interesting part, not a caveat to wave away. Because
 
 Overall human participation was almost identical — around 30% either way. What changed was its *shape*. On a human's PR, a human writes review. On an agent's PR, a human writes `@claude fix the lint failure`.
 
-That's not review. It's operating a machine. And the repository can no longer tell the two apart.
+> That's not review. It's operating a machine. And the repository can no longer tell the two apart.
 
 ## The artifact that doesn't exist
 

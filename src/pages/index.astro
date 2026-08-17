@@ -88,7 +88,8 @@ const now = [
     <span id="count" class="font-display text-[22vw] leading-[0.78] font-black text-raise tabular-nums md:text-[15vw]">000</span>
   </div>
 
-  <header class="fixed inset-x-0 top-0 z-50 mix-blend-difference">
+  <div class="nav-fade"></div>
+  <header class="fixed inset-x-0 top-0 z-50">
     <nav class="flex items-center justify-between px-6 py-5 md:px-10">
       <a href="/" class="font-display text-sm font-black tracking-tight text-bone">AK</a>
       <div class="flex gap-5 font-body text-[11px] uppercase tracking-[0.18em] text-bone md:gap-9 md:text-xs">
@@ -102,31 +103,66 @@ const now = [
   </header>
 
   <!-- ============================================================= hero -->
-  <section data-hero-section class="relative flex min-h-svh flex-col overflow-hidden px-6 pb-6 pt-24 md:px-10 md:pb-8">
-    <div class="hero-art">
+  <section data-hero-section class="relative flex min-h-svh flex-col overflow-hidden px-6 pb-6 pt-20 md:px-10 md:pb-8">
+    <!--
+      The plate opens as an inset, rounded frame and expands to full bleed as
+      the hero scrolls away — the container itself is the transition, so the
+      page appears to open rather than to scroll.
+    -->
+    <div data-frame class="hero-art scrim">
       <img data-parallax src="/img/hero.png" alt="" width="1376" height="768" fetchpriority="high" />
     </div>
 
-    <div class="relative z-10 mt-auto">
-      <p data-hero class="mb-5 max-w-[46ch] font-body text-sm text-bone-dim md:text-base">
-        I build systems that carry load — and stay explainable at 3am.
+    <div class="relative z-10 flex flex-1 flex-col">
+      <!-- availability, top-left: the one thing a hiring manager scans for -->
+      <p data-hero class="flex items-center gap-2.5 font-body text-[11px] uppercase tracking-[0.22em] text-bone-dim">
+        <span class="pulse"></span> Available for remote work
       </p>
 
-      <h1 class="font-display font-black uppercase leading-[0.82] tracking-[-0.035em]">
-        <span class="sr-only">Aaditya Kushwaha</span>
-        <span class="mask block" aria-hidden="true">
-          <span data-chars class="block text-[16.5vw] md:text-[14.5vw]">
-            {"Aaditya".split("").map((c) => <span class="inline-block">{c}</span>)}
-          </span>
-        </span>
-        <span class="mask block" aria-hidden="true">
-          <span data-chars class="block text-[13.2vw] text-sage md:text-[11.6vw]">
-            {"Kushwaha".split("").map((c) => <span class="inline-block">{c}</span>)}
-          </span>
-        </span>
-      </h1>
+      <div class="mt-auto grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-10">
+        <div class="lg:col-span-8">
+          <p data-hero class="legible mb-5 font-body text-base text-bone md:text-lg">
+            I build
+            <span data-stack class="stack" aria-hidden="true">
+              <span class="stack-item">systems</span>
+              <span class="stack-item">backends</span>
+              <span class="stack-item">platforms</span>
+              <span class="stack-item">networks</span>
+            </span>
+            <span class="sr-only">systems</span>
+            that carry load — and stay explainable at 3am.
+          </p>
 
-      <div data-hero class="mt-7 flex flex-wrap items-end justify-between gap-5 border-t border-hair pt-5">
+          <h1 class="legible font-display font-black uppercase leading-[0.8] tracking-[-0.038em]">
+            <span class="sr-only">Aaditya Kushwaha</span>
+            <span class="mask block" aria-hidden="true">
+              <span data-chars class="block text-[17vw] lg:text-[11.4vw]">
+                {"Aaditya".split("").map((c) => <span class="inline-block">{c}</span>)}
+              </span>
+            </span>
+            <span class="mask block" aria-hidden="true">
+              <span data-chars class="block text-[13.6vw] text-sage lg:text-[9.1vw]">
+                {"Kushwaha".split("").map((c) => <span class="inline-block">{c}</span>)}
+              </span>
+            </span>
+          </h1>
+        </div>
+
+        <!-- A live index of what is below, so the first screen already shows
+             the work rather than only announcing a name. -->
+        <nav data-group class="hidden lg:col-span-4 lg:block">
+          <p class="eyebrow mb-4">Selected systems</p>
+          {systems.map((sys) => (
+            <a href="#systems" class="group flex items-baseline gap-4 border-t border-hair/60 py-2.5">
+              <span class="font-display text-xs font-black tabular-nums text-sage">{sys.n}</span>
+              <span class="flex-1 font-body text-sm text-bone transition-colors group-hover:text-sage">{sys.name}</span>
+              <span class="font-body text-[11px] uppercase tracking-[0.14em] text-muted">{sys.org}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div data-hero class="mt-9 flex flex-wrap items-end justify-between gap-5">
         <p class="font-body text-sm uppercase leading-snug tracking-[0.12em] text-muted">
           <span class="block">Backend · Platform · Agentic systems</span>
           <span class="mt-1 block font-editorial text-base normal-case italic tracking-normal text-bone-dim">
@@ -138,14 +174,14 @@ const now = [
 
       <!-- Numbers in the hero so the first screen carries evidence, not just a name. -->
       <div data-hero class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-hair pt-5 md:grid-cols-4">
-        {stats.map((s) => (
+        {stats.map((st) => (
           <div>
             <span
-              data-num={s.n}
-              data-suffix={s.s}
+              data-num={st.n}
+              data-suffix={st.s}
               class="block font-display text-2xl font-black tabular-nums text-bone md:text-4xl"
-            >0{s.s}</span>
-            <span class="mt-0.5 block font-body text-[11px] uppercase leading-tight tracking-[0.14em] text-muted">{s.l}</span>
+            >0{st.s}</span>
+            <span class="mt-0.5 block font-body text-[11px] uppercase leading-tight tracking-[0.14em] text-muted">{st.l}</span>
           </div>
         ))}
       </div>
@@ -167,12 +203,26 @@ const now = [
     </div>
   </div>
 
+
+  <!-- ============================================================ flood -->
+  <section class="flood dissolve scrim flood-tall my-4 flex items-center md:my-10">
+    <img data-drift class="absolute inset-0" src="/img/flood-1.png" alt="" aria-hidden="true"
+      width="1376" height="768" loading="lazy" />
+    <div class="relative w-full px-6 md:px-10">
+      <p data-rise class="eyebrow">The work</p>
+      <p data-lines class="mt-4 overflow-hidden">
+        <span class="legible block font-display text-[9vw] font-black uppercase leading-[0.86] tracking-[-0.03em] md:text-[6.4vw]">Systems<br />under load</span>
+      </p>
+      <p data-rise class="legible mt-5 max-w-[46ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">Every number on this page came out of a repository, not a memory.</p>
+    </div>
+  </section>
+
   <!-- ============================================================ about -->
   <section id="work" class="px-6 py-20 md:px-10 md:py-28">
     <div class="grid gap-10 md:grid-cols-12 md:gap-14">
       <div class="md:col-span-5">
         <img data-wipe src="/img/about.png" alt="Abstract schematic of a distributed backend"
-          class="w-full border border-hair object-cover" width="880" height="1100" loading="lazy" />
+          class="dissolve-all negate w-full object-cover" width="880" height="1100" loading="lazy" />
       </div>
 
       <div class="md:col-span-7">
@@ -213,15 +263,15 @@ const now = [
   </section>
 
   <!-- ========================================================== systems -->
-  <section id="systems" class="border-t border-hair px-6 py-20 md:px-10 md:py-28">
-    <div data-rise class="mb-14 flex items-baseline justify-between border-b border-hair pb-4">
+  <section id="systems" class="px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-14 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Selected systems</h2>
-      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Four of them</span>
+      <span class="eyebrow">Four of them</span>
     </div>
 
     <div class="grid gap-10 md:grid-cols-12 md:gap-14">
       <div class="hidden md:col-span-5 md:block">
-        <div class="sticky top-20 aspect-4/5 overflow-hidden border border-hair bg-raise">
+        <div class="dissolve-all sticky top-20 aspect-4/5">
           {systems.map((s, i) => (
             <img data-plate class="plate h-full w-full object-cover" style={i === 0 ? "opacity:1" : ""}
               src={`/img/sys-0${i + 1}.png`} alt={`Abstract diagram — ${s.name}`}
@@ -233,7 +283,7 @@ const now = [
       <div class="flex flex-col gap-20 md:col-span-7 md:gap-36">
         {systems.map((s, i) => (
           <article data-case>
-            <img data-wipe class="mb-6 aspect-4/5 w-full border border-hair object-cover md:hidden"
+            <img data-wipe class="dissolve-all mb-6 aspect-4/5 w-full object-cover md:hidden"
               src={`/img/sys-0${i + 1}.png`} alt="" width="880" height="1100" loading="lazy" />
 
             <div data-group>
@@ -263,16 +313,29 @@ const now = [
     </div>
   </section>
 
+
+  <!-- ============================================================ flood -->
+  <section class="flood dissolve scrim flood-tall my-4 flex items-center md:my-10">
+    <img data-drift class="absolute inset-0" src="/img/flood-3.png" alt="" aria-hidden="true"
+      width="1376" height="768" loading="lazy" />
+    <div class="relative w-full px-6 md:px-10">
+      <p data-rise class="eyebrow">Where it ran</p>
+      <p data-lines class="mt-4 overflow-hidden">
+        <span class="legible block font-display text-[9vw] font-black uppercase leading-[0.86] tracking-[-0.03em] md:text-[6.4vw]">Real traffic,<br />real 3am</span>
+      </p>
+      <p data-rise class="legible mt-5 max-w-[46ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">Four years of shipping into production, across seven organisations.</p>
+    </div>
+  </section>
+
   <!-- ======================================================= experience -->
-  <section id="experience" class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
+  <section id="experience" class="relative overflow-hidden px-6 py-20 md:px-10 md:py-28">
     <img data-drift src="/img/band.png" alt="" aria-hidden="true"
-      class="pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-25" width="1600" height="686" loading="lazy" />
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ground via-ground/70 to-ground"></div>
+      class="dissolve pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-30" width="1600" height="686" loading="lazy" />
 
     <div class="relative">
-      <div data-rise class="mb-12 flex items-baseline justify-between border-b border-hair pb-4">
+      <div data-rise class="mb-12 flex items-baseline justify-between pb-4">
         <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Experience</h2>
-        <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">2022 — now</span>
+        <span class="eyebrow">2022 — now</span>
       </div>
 
       <div data-group>
@@ -289,10 +352,10 @@ const now = [
   </section>
 
   <!-- ===================================================== capabilities -->
-  <section class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
-    <div data-rise class="mb-12 flex items-baseline justify-between border-b border-hair pb-4">
+  <section class="relative overflow-hidden px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-12 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Capabilities</h2>
-      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Things I've shipped with</span>
+      <span class="eyebrow">Things I've shipped with</span>
     </div>
 
     <div class="grid gap-10 md:grid-cols-12 md:gap-14">
@@ -306,16 +369,16 @@ const now = [
       </div>
       <div class="md:col-span-5">
         <img data-wipe src="/img/stack.png" alt="Abstract layered infrastructure cross-section"
-          class="w-full border border-hair object-cover" width="1376" height="768" loading="lazy" />
+          class="dissolve-all negate w-full object-cover" width="1376" height="768" loading="lazy" />
       </div>
     </div>
   </section>
 
   <!-- ============================================================== oss -->
-  <section class="border-t border-hair bg-raise px-6 py-20 md:px-10 md:py-28">
-    <div data-rise class="mb-10 flex items-baseline justify-between border-b border-hair pb-4">
+  <section class="px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-10 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Open source</h2>
-      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Repos I committed to</span>
+      <span class="eyebrow">Repos I committed to</span>
     </div>
 
     <ul data-group>
@@ -333,10 +396,10 @@ const now = [
   </section>
 
   <!-- ========================================================== writing -->
-  <section id="writing" class="border-t border-hair px-6 py-20 md:px-10 md:py-28">
-    <div data-rise class="mb-10 flex items-baseline justify-between border-b border-hair pb-4">
+  <section id="writing" class="px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-10 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Writing</h2>
-      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Postmortems, mostly</span>
+      <span class="eyebrow">Postmortems, mostly</span>
     </div>
 
     <p data-rise class="max-w-[58ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
@@ -361,7 +424,7 @@ const now = [
         ["Encoding the law as a default-deny", "DPDP, PECR and CAN-SPAM as type-checked code that holds rather than sends."],
       ].map(([t, d]) => (
         <li class="border-t border-hair py-6 opacity-50">
-          <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Forthcoming</span>
+          <span class="eyebrow">Forthcoming</span>
           <h3 class="mt-2 max-w-[26ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight md:text-4xl">{t}</h3>
           <p class="mt-3 max-w-[58ch] font-body text-sm text-bone-dim">{d}</p>
         </li>
@@ -369,11 +432,24 @@ const now = [
     </ul>
   </section>
 
+
+  <!-- ============================================================ flood -->
+  <section class="flood dissolve scrim flood-tall my-4 flex items-center md:my-10">
+    <img data-drift class="absolute inset-0" src="/img/flood-2.png" alt="" aria-hidden="true"
+      width="1376" height="768" loading="lazy" />
+    <div class="relative w-full px-6 md:px-10">
+      <p data-rise class="eyebrow">What next</p>
+      <p data-lines class="mt-4 overflow-hidden">
+        <span class="legible block font-display text-[9vw] font-black uppercase leading-[0.86] tracking-[-0.03em] md:text-[6.4vw]">Available<br />now</span>
+      </p>
+      <p data-rise class="legible mt-5 max-w-[46ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">Remote, four or more hours of overlap with EU and US-East.</p>
+    </div>
+  </section>
+
   <!-- ========================================================== contact -->
-  <footer id="contact" class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
+  <footer id="contact" class="relative overflow-hidden px-6 py-20 md:px-10 md:py-28">
     <img data-drift src="/img/contact.png" alt="" aria-hidden="true"
-      class="pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-40" width="1600" height="686" loading="lazy" />
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ground/85 via-ground/60 to-ground"></div>
+      class="dissolve pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-45" width="1600" height="686" loading="lazy" />
 
     <div class="relative">
       <p data-rise class="font-body text-xs uppercase tracking-[0.25em] text-sage">Open to remote work — available now</p>

@@ -2,13 +2,23 @@
 import "../styles/global.css";
 
 interface Props {
-  frontmatter: { title: string; description: string; date: string; status?: string };
+  frontmatter: {
+    title: string;
+    description: string;
+    date: string;
+    status?: string;
+    hero?: string;
+    kicker?: string;
+    figure?: string;
+    figureAlt?: string;
+    panels?: { label: string; value: string; note?: string }[];
+  };
+  headings?: { depth: number; slug: string; text: string }[];
 }
-const { frontmatter: fm } = Astro.props;
+const { frontmatter: fm, headings = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const shown = new Date(fm.date).toLocaleDateString("en-GB", {
-  day: "numeric", month: "long", year: "numeric",
-});
+const shown = new Date(fm.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const toc = headings.filter((h) => h.depth === 2);
 ---
 
 <!doctype html>
@@ -36,53 +46,157 @@ const shown = new Date(fm.date).toLocaleDateString("en-GB", {
   </head>
 
   <body class="grain">
-    <header class="fixed inset-x-0 top-0 z-50 mix-blend-difference">
-      <nav class="flex items-center justify-between px-6 py-6 md:px-10">
+    <div id="progress"></div>
+    <div id="cursor"></div>
+    <div class="nav-fade"></div>
+
+    <header class="fixed inset-x-0 top-0 z-50">
+      <nav class="flex items-center justify-between px-6 py-5 md:px-10">
         <a href="/" class="font-display text-sm font-black tracking-tight text-bone">AK</a>
-        <a href="/#writing" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">All writing</a>
+        <a href="/#writing" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">← All writing</a>
       </nav>
     </header>
 
-    <article class="mx-auto max-w-[42rem] px-6 pb-28 pt-32 md:pt-44">
-      <p class="font-body text-xs uppercase tracking-[0.22em] text-sage">
-        {shown}{fm.status ? ` — ${fm.status}` : ""}
-      </p>
-
-      <h1 class="mt-5 font-display text-4xl font-black uppercase leading-[0.92] tracking-[-0.02em] md:text-6xl">
-        {fm.title}
-      </h1>
-
-      <div class="prose-post mt-12">
-        <slot />
+    <!-- ====================================================== article hero -->
+    <section class="scrim relative overflow-hidden px-6 pb-10 pt-28 md:px-10 md:pt-36">
+      {fm.hero && (
+        <img
+          data-drift
+          class="dissolve pointer-events-none absolute inset-x-0 top-0 h-[130%] w-full object-cover opacity-40"
+          src={fm.hero}
+          alt=""
+          aria-hidden="true"
+          width="1376"
+          height="768"
+        />
+      )}
+      <div class="relative mx-auto max-w-[78rem]">
+        <p data-rise class="eyebrow">{fm.kicker ?? "Writing"}</p>
+        <h1 data-rise class="legible mt-4 max-w-[20ch] font-display text-4xl font-black uppercase leading-[0.9] tracking-[-0.025em] md:text-7xl">
+          {fm.title}
+        </h1>
+        <p data-rise class="legible mt-6 max-w-[56ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">
+          {fm.description}
+        </p>
+        <p data-rise class="mt-7 font-body text-xs uppercase tracking-[0.2em] text-muted">
+          {shown}{fm.status ? ` · ${fm.status}` : ""} · Aaditya Kushwaha
+        </p>
       </div>
+    </section>
 
-      <hr class="mt-20 border-hair" />
-      <p class="mt-7 font-body text-sm text-bone-dim">
-        Written by Aaditya Kushwaha —
-        <a class="ul" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a> ·
-        <a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
-        <a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
-      </p>
-    </article>
+    <!-- ============================================ rails + reading column -->
+    <div class="mx-auto grid max-w-[78rem] gap-10 px-6 pb-24 md:px-10 lg:grid-cols-12 lg:gap-12">
+      <!-- left rail: contents -->
+      <aside class="hidden lg:col-span-3 lg:block">
+        <div class="sticky top-28">
+          <p class="eyebrow mb-4">Contents</p>
+          <nav class="flex flex-col">
+            {toc.map((h) => (
+              <a
+                href={`#${h.slug}`}
+                data-toc={h.slug}
+                class="ul border-t border-hair/60 py-2.5 font-body text-sm leading-snug text-muted transition-colors hover:text-bone"
+              >
+                {h.text}
+              </a>
+            ))}
+          </nav>
+
+          {fm.panels && (
+            <div class="mt-10">
+              <p class="eyebrow mb-4">By the numbers</p>
+              {fm.panels.map((p) => (
+                <div class="border-t border-hair/60 py-3">
+                  <span class="block font-display text-2xl font-black tabular-nums text-sage">{p.value}</span>
+                  <span class="block font-body text-[11px] uppercase leading-tight tracking-[0.14em] text-muted">{p.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </aside>
+
+      <!-- reading column -->
+      <article class="lg:col-span-6">
+        <div class="prose-post">
+          <slot />
+        </div>
+
+        <hr class="mt-16 border-hair" />
+        <div class="mt-7 flex flex-wrap items-center justify-between gap-4">
+          <p class="font-body text-sm text-bone-dim">
+            Written by Aaditya Kushwaha —
+            <a class="ul" href="mailto:work.aadityak@gmail.com">get in touch</a>
+          </p>
+          <a href="/#writing" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">More writing →</a>
+        </div>
+      </article>
+
+      <!-- right rail: figure + elsewhere -->
+      <aside class="lg:col-span-3">
+        <div class="sticky top-28 flex flex-col gap-8">
+          {fm.figure && (
+            <figure>
+              <img data-wipe class="dissolve-all w-full object-cover" src={fm.figure} alt={fm.figureAlt ?? ""} width="880" height="660" loading="lazy" />
+              {fm.figureAlt && (
+                <figcaption class="mt-3 font-body text-[12px] leading-snug text-muted">{fm.figureAlt}</figcaption>
+              )}
+            </figure>
+          )}
+
+          <div>
+            <p class="eyebrow mb-3">The tool</p>
+            <a href="https://github.com/aadityakushwaha/worklog-mcp" target="_blank" rel="noopener"
+              class="group block border-t border-hair/60 py-3">
+              <span class="block font-display text-lg font-black uppercase tracking-tight transition-colors group-hover:text-sage">worklog-mcp</span>
+              <span class="mt-1 block font-body text-[13px] leading-snug text-bone-dim">
+                MIT · TypeScript · one block of config
+              </span>
+            </a>
+          </div>
+
+          <div>
+            <p class="eyebrow mb-3">Elsewhere</p>
+            <p class="font-body text-sm text-bone">
+              <a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
+              <a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      import "../scripts/motion";
+      import "../scripts/toc";
+    </script>
 
     <style is:global>
-      /* Long-form reading rules. Measure is capped near 68 characters and the
-         type is a touch larger than UI text — an article is read, not scanned. */
-      .prose-post {
-        font-size: 17px;
-        line-height: 1.72;
-        color: var(--color-bone-dim);
-      }
-      .prose-post > * + * { margin-top: 1.35em; }
-      .prose-post h2 {
-        margin-top: 2.6em;
+      /* Long-form reading rules. Measure sits near 68 characters and the type is
+         a touch larger than UI text — an article is read, not scanned. */
+      .prose-post { font-size: 17.5px; line-height: 1.75; color: var(--color-bone-dim); }
+      .prose-post > * + * { margin-top: 1.4em; }
+      .prose-post > p:first-child::first-letter {
+        float: left;
+        margin: 0.06em 0.09em 0 0;
         font-family: var(--font-display);
         font-weight: 900;
-        font-size: 1.55rem;
-        line-height: 1.1;
+        font-size: 3.4em;
+        line-height: 0.78;
+        color: var(--color-bone);
+      }
+      .prose-post h2 {
+        margin-top: 2.8em;
+        padding-top: 1.1em;
+        border-top: 1px solid var(--color-hair);
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 1.6rem;
+        line-height: 1.08;
         letter-spacing: -0.01em;
         text-transform: uppercase;
         color: var(--color-bone);
+        scroll-margin-top: 7rem;
       }
       .prose-post h3 {
         margin-top: 2em;
@@ -101,29 +215,29 @@ const shown = new Date(fm.date).toLocaleDateString("en-GB", {
       }
       .prose-post a:hover { color: var(--color-sage); }
       .prose-post ul, .prose-post ol { padding-left: 1.15em; }
-      .prose-post li { margin-top: 0.5em; }
+      .prose-post li { margin-top: 0.55em; }
       .prose-post li::marker { color: var(--color-sage); }
       .prose-post code {
-        font-size: 0.88em;
+        font-size: 0.86em;
         background: var(--color-raise);
         border: 1px solid var(--color-hair);
         padding: 0.1em 0.36em;
         border-radius: 3px;
         color: var(--color-bone);
       }
+      /* Code panels break the measure deliberately — they are specimens, not prose. */
       .prose-post pre {
         overflow-x: auto;
         background: var(--color-raise);
         border: 1px solid var(--color-hair);
-        padding: 1.1rem 1.2rem;
-        border-radius: 4px;
-        font-size: 0.85em;
-        line-height: 1.6;
+        border-left: 2px solid var(--color-sage);
+        padding: 1.15rem 1.25rem;
+        font-size: 0.84em;
+        line-height: 1.62;
       }
       .prose-post pre code { background: none; border: 0; padding: 0; }
-      /* Tables scroll inside their own box so the article never scrolls sideways */
-      .prose-post table { width: 100%; border-collapse: collapse; font-size: 0.92em; display: block; overflow-x: auto; }
-      .prose-post th, .prose-post td { text-align: left; padding: 0.55em 0.85em; border-bottom: 1px solid var(--color-hair); }
+      .prose-post table { width: 100%; border-collapse: collapse; font-size: 0.93em; display: block; overflow-x: auto; }
+      .prose-post th, .prose-post td { text-align: left; padding: 0.6em 0.9em; border-bottom: 1px solid var(--color-hair); }
       .prose-post th {
         font-family: var(--font-body);
         font-size: 0.72rem;
@@ -133,15 +247,24 @@ const shown = new Date(fm.date).toLocaleDateString("en-GB", {
         border-bottom: 1px solid var(--color-sage);
         white-space: nowrap;
       }
+      /* Pull-quote panel: the one place the reading column is allowed to shout. */
       .prose-post blockquote {
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
+        padding: 1.4rem 1.5rem;
+        background: var(--color-raise);
         border-left: 2px solid var(--color-sage);
-        padding-left: 1.1rem;
         font-family: var(--font-editorial);
         font-style: italic;
-        font-size: 1.15em;
+        font-size: 1.28em;
+        line-height: 1.4;
         color: var(--color-bone);
       }
-      .prose-post hr { border: 0; border-top: 1px solid var(--color-hair); margin: 2.6em 0; }
+      .prose-post hr { border: 0; border-top: 1px solid var(--color-hair); margin: 2.8em 0; }
+      .prose-post img { width: 100%; }
+      @media (max-width: 640px) {
+        .prose-post blockquote { margin-left: 0; margin-right: 0; }
+      }
     </style>
   </body>
 </html>

@@ -189,3 +189,197 @@
 }
 
 .mask { overflow: hidden; display: block; }
+
+/* ==========================================================================
+   SEAMLESS GROUND
+   No section rules, no panel colour changes. Sections are separated by space
+   and by imagery that dissolves into the same ground, so the page reads as one
+   continuous surface rather than a stack of boxes.
+   ========================================================================== */
+
+/* Full-bleed regardless of the parent's padding.
+   NO overflow:hidden — clipping the child produces exactly the hard edge the
+   mask exists to avoid. The mask below does the clipping instead, softly. */
+.flood {
+  position: relative;
+  width: 100vw;
+  margin-left: 50%;
+  translate: -50% 0;
+}
+
+/* The dissolve. A mask beats a gradient overlay here: an overlay has to match
+   the ground colour exactly and breaks the moment the ground changes, whereas
+   a mask removes the pixels and lets whatever is behind show through. */
+.dissolve {
+  --fade: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 14%,
+    #000 38%,
+    #000 62%,
+    rgba(0, 0, 0, 0.4) 86%,
+    transparent 100%
+  );
+  -webkit-mask-image: var(--fade);
+  mask-image: var(--fade);
+}
+
+/* Fade on all four sides at once — for plates that sit inside the page rather
+   than spanning it. Two masks composited, so no corner stays hard. */
+.dissolve-all {
+  --fy: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  --fx: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  -webkit-mask-image: var(--fy), var(--fx);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--fy), var(--fx);
+  mask-composite: intersect;
+}
+
+/* Same idea on the horizontal axis, for plates that sit beside text. */
+.dissolve-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+/* A flood tall enough to own the screen. svh so mobile browser chrome doesn't
+   clip it, and the image is over-tall to leave room for parallax travel. */
+.flood-tall {
+  min-height: 82svh;
+}
+.flood img {
+  width: 100%;
+  height: 118%;
+  object-fit: cover;
+}
+
+/* Section headings no longer sit on a rule; the eyebrow carries the break. */
+.eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--color-sage);
+}
+
+/* ==========================================================================
+   STACK TEXT
+   A fixed-width slot with the words stacked inside it. Width is set from the
+   longest word so the surrounding sentence never reflows as words cycle —
+   a line of text that jitters on every swap is worse than no animation.
+   ========================================================================== */
+.stack {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  text-align: left;
+  color: var(--color-sage);
+  min-width: 5.4em;
+  height: 1.35em;
+}
+.stack-item {
+  position: absolute;
+  inset: 0;
+  display: block;
+  white-space: nowrap;
+}
+/* Only the first is visible before Motion takes over. */
+.stack-item:not(:first-child) {
+  opacity: 0;
+}
+
+/* -------------------------------------------------------- hero container */
+/* clip-path rather than padding or inset: it composites, so expanding the
+   frame on scroll costs nothing in layout. */
+.hero-art {
+  clip-path: inset(1.4rem round 1.6rem);
+}
+@media (min-width: 768px) {
+  .hero-art {
+    clip-path: inset(1.75rem round 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art { clip-path: none; }
+  .stack { height: auto; min-width: 0; }
+  .stack-item { position: static; }
+  .stack-item:not(:first-child) { display: none; }
+}
+
+/* --------------------------------------------------------------- negate */
+/* Plates that generated light-on-cream instead of bone-on-black. Inverting
+   lightness and rotating hue back keeps the drawing but puts it on the page's
+   own ground, so it recedes instead of glaring. */
+.negate {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(1.08);
+}
+
+/* ==========================================================================
+   LEGIBILITY OVER IMAGERY
+   Text on a plate needs its own ground. A blanket dark overlay would kill the
+   artwork, so the scrim is directional: heavy where the text sits, gone by the
+   time it reaches the part of the image worth seeing.
+   ========================================================================== */
+.scrim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(11, 12, 11, 0.94) 0%,
+      rgba(11, 12, 11, 0.86) 30%,
+      rgba(11, 12, 11, 0.45) 58%,
+      transparent 78%
+    ),
+    linear-gradient(180deg, rgba(11, 12, 11, 0.5) 0%, transparent 30%, transparent 70%, rgba(11, 12, 11, 0.5) 100%);
+}
+@media (max-width: 767px) {
+  /* No room to dodge sideways on a phone — darken the whole plate instead. */
+  .scrim::before {
+    background: linear-gradient(180deg, rgba(11, 12, 11, 0.72) 0%, rgba(11, 12, 11, 0.86) 100%);
+  }
+}
+
+/* Last-resort separation for type that still crosses a bright passage. */
+.legible {
+  text-shadow: 0 1px 28px rgba(11, 12, 11, 0.95), 0 1px 6px rgba(11, 12, 11, 0.8);
+}
+
+/* ------------------------------------------------------------- nav ground */
+/* The fixed nav was colliding with the marquee. A short fade under it keeps
+   the links readable over whatever scrolls beneath, without a solid bar. */
+.nav-fade {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 96px;
+  z-index: 40;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(11, 12, 11, 0.92) 0%, rgba(11, 12, 11, 0.55) 45%, transparent 100%);
+}
+
+/* ------------------------------------------------------ availability dot */
+.pulse {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-sage);
+}
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-sage);
+  animation: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  75%, 100% { transform: scale(3.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after { animation: none; }
+}
