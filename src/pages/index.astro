@@ -433,19 +433,6 @@ const now = [
   </section>
 
 
-  <!-- ============================================================ flood -->
-  <section class="flood scrim my-4 flex min-h-[56svh] items-center py-24 md:my-8 md:min-h-[62svh] md:py-28">
-    <div class="dissolve absolute inset-0 overflow-hidden">
-        <img data-drift src="/img/flood-2.png" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
-      </div>
-    <div class="relative z-10 w-full px-6 md:px-10 xl:px-16 2xl:px-24">
-      <p data-rise class="eyebrow">What next</p>
-      <p data-lines class="mt-4 overflow-hidden">
-        <span class="legible block font-display text-[9vw] font-black uppercase leading-[0.86] tracking-[-0.03em] md:text-[6.4vw]">Available<br />now</span>
-      </p>
-      <p data-rise class="legible mt-5 max-w-[46ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">Remote, four or more hours of overlap with EU and US-East.</p>
-    </div>
-  </section>
 
   <!-- ========================================================== contact -->
   <footer id="contact" class="relative overflow-hidden px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
@@ -455,15 +442,26 @@ const now = [
     <div class="relative">
       <p data-rise class="font-body text-xs uppercase tracking-[0.25em] text-sage">Open to remote work — available now</p>
 
+      <!--
+        The link text is the address itself. "Say hello" reads nicely but does
+        not tell anyone what the click does; an email link should show the email.
+      -->
       <a href="mailto:work.aadityak@gmail.com"
-        class="mt-5 block font-display text-[13vw] font-black uppercase leading-[0.85] tracking-[-0.03em] transition-colors hover:text-sage md:text-[8vw]">
-        Say hello
+        class="mt-5 block break-words font-display text-[8.5vw] font-black uppercase leading-[0.92] tracking-[-0.03em] transition-colors hover:text-sage md:text-[5.4vw]">
+        work.aadityak@gmail.com
       </a>
+      <p data-rise class="mt-4 max-w-[52ch] font-body text-sm text-bone-dim">
+        Opens your mail app — or copy the address. I read everything and reply within a day.
+      </p>
 
       <div data-group class="mt-12 grid gap-8 border-t border-hair pt-7 md:grid-cols-3">
         <div>
-          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Email</p>
-          <a class="ul font-body text-sm text-bone" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a>
+          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Looking for</p>
+          <p class="font-body text-sm text-bone">Backend or platform roles, remote</p>
+        </div>
+        <div>
+          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Based in</p>
+          <p class="font-body text-sm text-bone">Lucknow, India — IST, 4+ hours overlap with EU and US-East</p>
         </div>
         <div>
           <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Elsewhere</p>
@@ -471,10 +469,6 @@ const now = [
             <a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
             <a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
           </p>
-        </div>
-        <div>
-          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Overlap</p>
-          <p class="font-body text-sm text-bone">IST — 4+ hours with EU and US-East</p>
         </div>
       </div>
 
