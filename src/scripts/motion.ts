@@ -236,6 +236,24 @@ ready(() => {
     }
   }
 
+  /* -------------------------------------------------- scroll-masked text */
+  // Words light up as the block crosses the viewport, tied to scroll position
+  // rather than a timer, so scrubbing back un-writes the sentence.
+  document.querySelectorAll<HTMLElement>("[data-reveal-text]").forEach((block) => {
+    const words = [...block.querySelectorAll<HTMLElement>(".reveal-word")];
+    if (!words.length) return;
+
+    scroll(
+      (progress: number) => {
+        // Spread the lit edge across the words with a short ramp, so a few are
+        // mid-transition at any moment instead of snapping one at a time.
+        const edge = progress * (words.length + 6) - 3;
+        words.forEach((w, i) => w.classList.toggle("lit", i <= edge));
+      },
+      { target: block, offset: ["start 0.85", "end 0.45"] },
+    );
+  });
+
   /* ------------------------------------------------------ counting stats */
   inView(
     "[data-num]",

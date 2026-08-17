@@ -270,16 +270,22 @@
   position: relative;
   display: inline-block;
   overflow: hidden;
-  vertical-align: bottom;
+  /* Baseline, not bottom: aligning the box's bottom edge to the line box drops
+     the word below the surrounding text. The small negative offset seats the
+     clipped box back onto the shared baseline. */
+  vertical-align: -0.22em;
   text-align: left;
   color: var(--color-sage);
-  height: 1.35em;
+  height: 1.2em;
+  line-height: 1.2em;
   min-width: 3.9em;
 }
 .stack-item {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
   display: block;
+  line-height: 1.2em;
   white-space: nowrap;
 }
 /* Only the first is visible before Motion takes over. */
@@ -384,4 +390,24 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .pulse::after { animation: none; }
+}
+
+/* ==========================================================================
+   SCROLL-MASKED TEXT
+   Each word starts dim and lights to full as the block moves through the
+   viewport. Colour, not opacity — an opacity ramp on text over a dark ground
+   reads as a fade-in; a colour ramp reads as the sentence being written.
+   ========================================================================== */
+.reveal-word {
+  color: var(--color-hair);
+  transition: color 0.35s linear;
+}
+.reveal-word.lit {
+  color: var(--color-bone);
+}
+.reveal-word.lit-accent {
+  color: var(--color-sage);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-word { color: var(--color-bone); }
 }

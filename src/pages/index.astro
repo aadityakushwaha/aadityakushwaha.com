@@ -118,15 +118,13 @@ const now = [
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-10">
         <div class="lg:col-span-8">
           <p data-hero class="legible mb-5 font-body text-base text-bone md:text-lg">
-            I build
-            <span data-stack class="stack" aria-hidden="true">
-              <span class="stack-item">systems</span>
-              <span class="stack-item">backends</span>
-              <span class="stack-item">platforms</span>
-              <span class="stack-item">networks</span>
-            </span>
-            <span class="sr-only">systems</span>
-            that carry load — and stay explainable at 3am.
+            I build <span data-stack class="stack"
+              ><span class="sr-only">systems</span
+              ><span class="stack-item" aria-hidden="true">systems</span
+              ><span class="stack-item" aria-hidden="true">backends</span
+              ><span class="stack-item" aria-hidden="true">platforms</span
+              ><span class="stack-item" aria-hidden="true">networks</span
+            ></span> that carry load — and stay explainable at 3am.
           </p>
 
           <h1 class="legible font-display font-black uppercase leading-[0.8] tracking-[-0.038em]">
@@ -225,11 +223,9 @@ const now = [
       <div class="md:col-span-7">
         <p data-rise class="font-body text-xs uppercase tracking-[0.22em] text-sage">What I actually do</p>
 
-        <div data-lines class="mt-5 overflow-hidden">
-          <h2 class="font-editorial text-3xl italic leading-[1.15] text-bone md:text-5xl">
-            Most of my work is the unglamorous half — the part that decides whether the demo survives contact with real traffic.
-          </h2>
-        </div>
+        <h2 data-reveal-text class="mt-5 font-editorial text-3xl italic leading-[1.18] md:text-5xl">
+          <span class="reveal-word">Most</span> <span class="reveal-word">of</span> <span class="reveal-word">my</span> <span class="reveal-word">work</span> <span class="reveal-word">is</span> <span class="reveal-word">the</span> <span class="reveal-word">unglamorous</span> <span class="reveal-word">half</span> <span class="reveal-word">—</span> <span class="reveal-word">the</span> <span class="reveal-word">part</span> <span class="reveal-word">that</span> <span class="reveal-word">decides</span> <span class="reveal-word">whether</span> <span class="reveal-word">the</span> <span class="reveal-word">demo</span> <span class="reveal-word">survives</span> <span class="reveal-word">contact</span> <span class="reveal-word">with</span> <span class="reveal-word">real</span> <span class="reveal-word">traffic.</span>
+        </h2>
 
         <div data-group class="mt-8 max-w-[62ch] space-y-4 font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">
           <p>
@@ -382,11 +378,17 @@ const now = [
     <ul data-group>
       {oss.map((o) => (
         <li class="border-b border-hair">
+          <!--
+            Grid, not a flex row with a fixed-width name. `lugvitc.github.io`
+            renders wider than any column you'd pick, and md:w-64 made it
+            overflow straight across the description. The name column now
+            shrinks, and break-words gives the dots somewhere to break.
+          -->
           <a href={o.href} target="_blank" rel="noopener"
-            class="group flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:gap-10">
-            <span class="font-display text-2xl font-black uppercase tracking-tight transition-colors group-hover:text-sage md:w-64 md:shrink-0 md:text-3xl">{o.name}</span>
-            <span class="max-w-[54ch] flex-1 font-body text-sm text-bone-dim md:text-base">{o.note}</span>
-            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:text-right">{o.meta}</span>
+            class="group grid gap-x-8 gap-y-2 py-6 md:grid-cols-12 md:items-baseline">
+            <span class="min-w-0 break-words font-display text-xl font-black uppercase leading-[1.05] tracking-tight transition-colors group-hover:text-sage md:col-span-4 md:text-2xl">{o.name}</span>
+            <span class="min-w-0 font-body text-sm text-bone-dim md:col-span-6 md:text-base">{o.note}</span>
+            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:col-span-2 md:text-right">{o.meta}</span>
           </a>
         </li>
       ))}
