@@ -1,60 +1,78 @@
 ---
 import Base from "../layouts/Base.astro";
 
+const stats = [
+  { n: 4000, s: "+", l: "Commits, last 24 months" },
+  { n: 11, s: "", l: "Organisations shipped for" },
+  { n: 233, s: "k", l: "Companies in one pipeline" },
+  { n: 65, s: "", l: "Nodes on the private mesh" },
+];
+
 const systems = [
   {
-    n: "01",
-    name: "Ride-hailing platform",
-    org: "Aerovahan",
-    years: "2025 — 2026",
-    body:
-      "Dispatch and matching for a live marketplace: driver-offer caps, radius expansion, dynamic surge, hot-zone broadcast, demand forecasting, and a rider–driver bid flow. I owned the backend, the admin console, and both Flutter apps.",
+    n: "01", name: "Ride-hailing platform", org: "Aerovahan", years: "2025 — 2026",
+    body: "Dispatch and matching for a live marketplace: driver-offer caps, radius expansion, dynamic surge, hot-zone broadcast, demand forecasting, and a rider–driver bid flow. I owned the backend, the admin console, and both Flutter apps.",
     facts: ["863 commits", "94 routers", "110 services", "98 migrations", "~135k lines"],
     stack: "FastAPI · SQLAlchemy 2 async · Postgres · Redis · Next.js · Flutter",
+    note: "Diagnosed a production outage caused by ElastiCache cluster-mode semantics — cross-slot deletes, blocked KEYS scans, and a single Uvicorn worker taking health checks down with it.",
   },
   {
-    n: "02",
-    name: "School-transport safety",
-    org: "Aero Squad",
-    years: "2026",
-    body:
-      "Parents watch a bus in real time; schools verify arrivals with a TOTP gate check that works with no signal. Geofenced trips over OSRM map-matching, and a KYC pipeline doing DigiLocker lookups, OCR and face-to-document matching behind circuit breakers.",
-    facts: ["372 commits", "22 screens", "zero to shipped in 10 weeks"],
+    n: "02", name: "School-transport safety", org: "Aero Squad", years: "2026",
+    body: "Parents watch a bus in real time; schools verify arrivals with a TOTP gate check that works with no signal. Geofenced trips over OSRM map-matching, and a KYC pipeline doing DigiLocker lookups, OCR and face-to-document matching behind circuit breakers.",
+    facts: ["372 commits", "22 screens", "0 → shipped in 10 weeks"],
     stack: "FastAPI · PostGIS · OSRM · Flutter · Riverpod · arq",
+    note: "Every external API sits behind a breaker, because a KYC provider timing out should slow one onboarding, not the fleet.",
   },
   {
-    n: "03",
-    name: "Multi-tenant AI LMS",
-    org: "Blitzlearning",
-    years: "2026",
-    body:
-      "Tenant isolation enforced by Postgres row-level security rather than application code — the database refuses cross-tenant reads even when the app is wrong. SCORM, cmi5 and AICC delivery, white-labelled per tenant.",
+    n: "03", name: "Multi-tenant AI LMS", org: "Blitzlearning", years: "2026",
+    body: "Tenant isolation enforced by Postgres row-level security rather than application code — the database refuses cross-tenant reads even when the app is wrong. SCORM, cmi5 and AICC delivery, white-labelled per tenant.",
     facts: ["415 commits", "RLS at the database", "pgvector + Meilisearch"],
-    stack: "FastAPI · Postgres 16 · pgvector · Next.js 14 · Turborepo",
+    stack: "FastAPI · Postgres 16 · pgvector · Next.js 14 · Turborepo · uv",
+    note: "Isolation you can test: the integration suite asserts a tenant cannot read another's rows even with a forged tenant id.",
   },
   {
-    n: "04",
-    name: "The network it all runs on",
-    org: "Altacee",
-    years: "2024 — now",
-    body:
-      "Designed and operate the estate end to end: dual-WAN with failover, 802.1Q segmentation across three isolated networks, RSTP bridges on redundant NIC pairs. Internal services have no public listener at all — they are reachable only across the mesh.",
-    facts: ["17 interfaces", "2 Proxmox estates", "~65-node tailnet", "18 VMs"],
+    n: "04", name: "The network it runs on", org: "Altacee", years: "2024 — now",
+    body: "Designed and operate the estate end to end: dual-WAN with failover, 802.1Q segmentation across three isolated networks, RSTP bridges on redundant NIC pairs. Internal services have no public listener at all — reachable only across the mesh.",
+    facts: ["17 interfaces", "2 Proxmox estates", "18 VMs", "~65-node tailnet"],
     stack: "OPNsense · Proxmox · Docker Swarm · Traefik · Tailscale · Cloudflare",
+    note: "Provisioning, firewall changes and DNS run through an MCP server as typed, audited operations rather than console clicks.",
   },
+];
+
+const roles = [
+  { years: "2025 — 2026", org: "Aerovahan", title: "Full-Stack Engineer", what: "Ride-hailing platform and school-transport safety — backend, console, vendor portal, two Flutter apps." },
+  { years: "2023 — now", org: "Altacee", title: "Full-Stack & Platform Engineer", what: "Product studio. Multi-tenant LMS, marketing suite, CRM, self-hosted platform and network." },
+  { years: "2024 — 2025", org: "AIKO-1", title: "Full-Stack Engineer", what: "Consumer Flutter app, bulk image generation, investor tooling, messaging and ad services." },
+  { years: "2025", org: "The HW Store", title: "Engineer", what: "Collector app, marketplace crawler, ML pricing service, unified search API." },
+  { years: "2024 — 2025", org: "Cyber-Team", title: "Security Engineer", what: "Dockerised CTF platform, XSS detection tooling, security write-ups and course material." },
+  { years: "2023 — 2026", org: "Kazmik Group", title: "Engineer", what: "LMS, payments with an operations dashboard, event management, salon booking." },
+  { years: "2022 — now", org: "LUGVITC", title: "Contributor & Maintainer", what: "Open-source platforms and tooling used across the university." },
+];
+
+const caps = [
+  { k: "Languages", v: "Python · TypeScript · Dart · Go · Swift · SQL · C++" },
+  { k: "Backend", v: "FastAPI · SQLAlchemy 2 async · Alembic · Celery · arq · pytest · OpenAPI · WebSockets · SSE" },
+  { k: "Frontend", v: "Next.js App Router · React · Astro · Angular · Tailwind · TanStack Query · Zustand · deck.gl" },
+  { k: "Mobile", v: "Flutter · Riverpod · go_router · Dio · live activities · offline-first sync" },
+  { k: "Data", v: "PostgreSQL · PostGIS · pgvector · row-level security · Redis · Meilisearch · MinIO" },
+  { k: "Infrastructure", v: "Docker Swarm · Traefik · Proxmox · OPNsense · Tailscale · AWS · Cloudflare · GitHub Actions" },
+  { k: "AI", v: "MCP server development · Anthropic & Gemini APIs · pgvector RAG · agent orchestration" },
 ];
 
 const oss = [
-  { name: "worklog-mcp", stars: null, note: "Six tools that let a coding agent record what it did and why. JSONL, no backend.", href: "https://github.com/aadityakushwaha/worklog-mcp", mine: true },
-  { name: "whats4linux", stars: 29, note: "Unofficial WhatsApp desktop client for Linux, in Go.", href: "https://github.com/lugvitc/whats4linux", mine: false },
-  { name: "pwncore", stars: 17, note: "CTF platform backend — dynamic per-team flags, Docker-per-team.", href: "https://github.com/lugvitc/pwncore", mine: false },
-  { name: "lugtype", stars: 4, note: "Monkeytype fork with an original OneRandom mode.", href: "https://github.com/lugvitc/lugtype", mine: false },
+  { name: "worklog-mcp", stars: "New", note: "Six tools that let a coding agent record what it did and why. JSONL, no backend.", href: "https://github.com/aadityakushwaha/worklog-mcp" },
+  { name: "whats4linux", stars: "29★", note: "Unofficial WhatsApp desktop client for Linux, in Go.", href: "https://github.com/lugvitc/whats4linux" },
+  { name: "pwncore", stars: "17★", note: "CTF platform backend — dynamic per-team flags, Docker-per-team.", href: "https://github.com/lugvitc/pwncore" },
+  { name: "lugtype", stars: "4★", note: "Monkeytype fork with an original OneRandom mode.", href: "https://github.com/lugvitc/lugtype" },
+  { name: "enigma25", stars: "4★", note: "Front end for the Enigma 2025 event.", href: "https://github.com/lugvitc/enigma25" },
 ];
 
-const marquee = [
-  "FASTAPI", "POSTGRESQL", "ROW-LEVEL SECURITY", "REDIS", "POSTGIS", "PGVECTOR",
-  "FLUTTER", "NEXT.JS", "TYPESCRIPT", "PROXMOX", "TAILSCALE", "OPNSENSE",
-  "DOCKER SWARM", "MCP", "ARQ", "TRAEFIK",
+const marquee = ["FASTAPI", "POSTGRESQL", "ROW-LEVEL SECURITY", "REDIS", "POSTGIS", "PGVECTOR", "FLUTTER", "NEXT.JS", "TYPESCRIPT", "PROXMOX", "TAILSCALE", "OPNSENSE", "DOCKER SWARM", "MCP", "ARQ", "TRAEFIK"];
+
+const now = [
+  "Building agentic infrastructure tooling at Altacee",
+  "Writing up production postmortems worth reading",
+  "Open to remote roles — 4+ hours EU / US-East overlap",
 ];
 ---
 
@@ -62,18 +80,18 @@ const marquee = [
   title="Aaditya Kushwaha — Backend & Platform Engineer"
   description="Backend and platform engineer. Dispatch engines, multi-tenant SaaS, agentic infrastructure — and the network underneath them."
 >
-  <!-- ============================================================ loader -->
   <div id="loader" class="flex items-end justify-between p-6 md:p-10">
     <span class="font-body text-xs uppercase tracking-[0.3em] text-muted">Aaditya Kushwaha</span>
     <span id="count" class="font-display text-[22vw] leading-[0.78] font-black text-raise tabular-nums md:text-[15vw]">000</span>
   </div>
 
-  <!-- ============================================================== nav -->
   <header class="fixed inset-x-0 top-0 z-50 mix-blend-difference">
-    <nav class="flex items-center justify-between px-6 py-6 md:px-10">
+    <nav class="flex items-center justify-between px-6 py-5 md:px-10">
       <a href="/" class="font-display text-sm font-black tracking-tight text-bone">AK</a>
-      <div class="flex gap-6 font-body text-xs uppercase tracking-[0.18em] text-bone md:gap-10">
+      <div class="flex gap-5 font-body text-[11px] uppercase tracking-[0.18em] text-bone md:gap-9 md:text-xs">
+        <a href="#work" class="ul hidden sm:inline">Work</a>
         <a href="#systems" class="ul">Systems</a>
+        <a href="#experience" class="ul hidden sm:inline">Experience</a>
         <a href="#writing" class="ul">Writing</a>
         <a href="#contact" class="ul">Contact</a>
       </div>
@@ -81,62 +99,64 @@ const marquee = [
   </header>
 
   <!-- ============================================================= hero -->
-  <section class="relative flex min-h-svh flex-col justify-between overflow-hidden px-6 pb-8 pt-28 md:px-10 md:pb-10">
-    <div data-hero class="hero-art" style="--d:0ms">
+  <section data-hero-section class="relative flex min-h-svh flex-col overflow-hidden px-6 pb-6 pt-24 md:px-10 md:pb-8">
+    <div class="hero-art">
       <img data-parallax src="/img/hero.png" alt="" width="1376" height="768" fetchpriority="high" />
     </div>
 
     <div class="relative z-10 mt-auto">
-      <p data-hero class="pre mb-6 max-w-[46ch] font-body text-sm text-bone-dim md:mb-10 md:text-base" style="--d:900ms">
+      <p data-hero class="mb-5 max-w-[46ch] font-body text-sm text-bone-dim md:text-base">
         I build systems that carry load — and stay explainable at 3am.
       </p>
 
-      <!--
-        Sized per line rather than uniformly: KUSHWAHA is eight characters and
-        carries a W, so at the size AADITYA wants it runs past the right margin.
-        Each character is its own span so the line can rise letter by letter.
-      -->
       <h1 class="font-display font-black uppercase leading-[0.82] tracking-[-0.035em]">
         <span class="sr-only">Aaditya Kushwaha</span>
-
-        <span data-hero class="mask block" style="--d:120ms" aria-hidden="true">
-          <span class="chars in block text-[16.5vw] md:text-[14.5vw]">
-            {"Aaditya".split("").map((c, i) => (
-              <span style={`transition-delay:${420 + i * 45}ms`}>{c}</span>
-            ))}
+        <span class="mask block" aria-hidden="true">
+          <span data-chars class="block text-[16.5vw] md:text-[14.5vw]">
+            {"Aaditya".split("").map((c) => <span class="inline-block">{c}</span>)}
           </span>
         </span>
-
-        <span data-hero class="mask block" style="--d:240ms" aria-hidden="true">
-          <span class="chars in block text-[13.2vw] text-sage md:text-[11.6vw]">
-            {"Kushwaha".split("").map((c, i) => (
-              <span style={`transition-delay:${540 + i * 45}ms`}>{c}</span>
-            ))}
+        <span class="mask block" aria-hidden="true">
+          <span data-chars class="block text-[13.2vw] text-sage md:text-[11.6vw]">
+            {"Kushwaha".split("").map((c) => <span class="inline-block">{c}</span>)}
           </span>
         </span>
       </h1>
-    </div>
 
-    <div data-hero class="pre relative z-10 mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-hair pt-6" style="--d:1150ms">
-      <p class="font-body text-sm uppercase leading-snug tracking-[0.12em] text-muted">
-        <span class="block whitespace-nowrap">Backend · Platform · Agentic systems</span>
-        <span class="mt-1 block font-editorial text-base normal-case italic tracking-normal text-bone-dim">
-          four years, mostly in production
-        </span>
-      </p>
-      <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Lucknow, India — remote</p>
+      <div data-hero class="mt-7 flex flex-wrap items-end justify-between gap-5 border-t border-hair pt-5">
+        <p class="font-body text-sm uppercase leading-snug tracking-[0.12em] text-muted">
+          <span class="block">Backend · Platform · Agentic systems</span>
+          <span class="mt-1 block font-editorial text-base normal-case italic tracking-normal text-bone-dim">
+            four years, mostly in production
+          </span>
+        </p>
+        <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Lucknow, India — remote</p>
+      </div>
+
+      <!-- Numbers in the hero so the first screen carries evidence, not just a name. -->
+      <div data-hero class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-hair pt-5 md:grid-cols-4">
+        {stats.map((s) => (
+          <div>
+            <span
+              data-num={s.n}
+              data-suffix={s.s}
+              class="block font-display text-2xl font-black tabular-nums text-bone md:text-4xl"
+            >0{s.s}</span>
+            <span class="mt-0.5 block font-body text-[11px] uppercase leading-tight tracking-[0.14em] text-muted">{s.l}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
   <!-- ========================================================== marquee -->
-  <div class="overflow-hidden border-y border-hair py-4">
+  <div class="overflow-hidden border-y border-hair py-3">
     <div class="marquee">
       {[0, 1].map(() => (
-        <div class="flex shrink-0 items-center" aria-hidden="false">
+        <div class="flex shrink-0 items-center">
           {marquee.map((m) => (
             <span class="flex items-center whitespace-nowrap font-body text-xs uppercase tracking-[0.25em] text-muted">
-              <span class="px-6">{m}</span>
-              <span class="text-sage">/</span>
+              <span class="px-6">{m}</span><span class="text-sage">/</span>
             </span>
           ))}
         </div>
@@ -144,98 +164,165 @@ const marquee = [
     </div>
   </div>
 
+  <!-- ============================================================ about -->
+  <section id="work" class="px-6 py-20 md:px-10 md:py-28">
+    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
+      <div class="md:col-span-5">
+        <img data-wipe src="/img/about.png" alt="Abstract schematic of a distributed backend"
+          class="w-full border border-hair object-cover" width="880" height="1100" loading="lazy" />
+      </div>
+
+      <div class="md:col-span-7">
+        <p data-rise class="font-body text-xs uppercase tracking-[0.22em] text-sage">What I actually do</p>
+
+        <div data-lines class="mt-5 overflow-hidden">
+          <h2 class="font-editorial text-3xl italic leading-[1.15] text-bone md:text-5xl">
+            Most of my work is the unglamorous half — the part that decides whether the demo survives contact with real traffic.
+          </h2>
+        </div>
+
+        <div data-group class="mt-8 max-w-[62ch] space-y-4 font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">
+          <p>
+            I've spent four years shipping production systems end to end: the FastAPI service, the Next.js console
+            that operates it, the Flutter app that consumes it, and the network it runs on. Not four separate jobs —
+            one system, seen from four sides.
+          </p>
+          <p>
+            The through-line is enforcement at the right layer. Tenant isolation belongs in the database, not in a
+            code review checklist. Compliance rules belong in a type-checked default-deny, not a wiki page. A circuit
+            breaker belongs around every external call, because the third party <em>will</em> time out at 3am.
+          </p>
+          <p>
+            I write about the failures because they're the part worth reading — the outage that taught me
+            ElastiCache cluster mode is not Redis, and what it cost to find out.
+          </p>
+        </div>
+
+        <ul data-group class="mt-9 border-t border-hair">
+          {now.map((n) => (
+            <li class="flex gap-4 border-b border-hair py-3 font-body text-sm text-bone">
+              <span class="text-sage">→</span><span>{n}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- ========================================================== systems -->
-  <section id="systems" class="px-6 py-24 md:px-10 md:py-36">
-    <div class="pre mb-16 flex items-baseline justify-between border-b border-hair pb-5 md:mb-24">
+  <section id="systems" class="border-t border-hair px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-14 flex items-baseline justify-between border-b border-hair pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Selected systems</h2>
       <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Four of them</span>
     </div>
 
-    <!--
-      Two tracks: the left plate is sticky and swaps as the right column
-      scrolls, so the artwork changes without the reader losing their place.
-      On narrow screens the plate rides above each entry instead.
-    -->
     <div class="grid gap-10 md:grid-cols-12 md:gap-14">
       <div class="hidden md:col-span-5 md:block">
-        <div class="sticky top-24 aspect-4/5 overflow-hidden border border-hair bg-raise">
+        <div class="sticky top-20 aspect-4/5 overflow-hidden border border-hair bg-raise">
           {systems.map((s, i) => (
-            <img
-              data-plate
-              class={`plate h-full w-full object-cover${i === 0 ? " live" : ""}`}
-              src={`/img/sys-0${i + 1}.png`}
-              alt={`Abstract diagram — ${s.name}`}
-              width="880"
-              height="1100"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
+            <img data-plate class="plate h-full w-full object-cover" style={i === 0 ? "opacity:1" : ""}
+              src={`/img/sys-0${i + 1}.png`} alt={`Abstract diagram — ${s.name}`}
+              width="880" height="1100" loading={i === 0 ? "eager" : "lazy"} />
           ))}
         </div>
       </div>
 
-      <div class="flex flex-col gap-24 md:col-span-7 md:gap-44">
+      <div class="flex flex-col gap-20 md:col-span-7 md:gap-36">
         {systems.map((s, i) => (
-          <article data-case class="pre">
-            <img
-              class="wipe mb-7 aspect-4/5 w-full border border-hair object-cover md:hidden"
-              src={`/img/sys-0${i + 1}.png`}
-              alt={`Abstract diagram — ${s.name}`}
-              width="880"
-              height="1100"
-              loading="lazy"
-            />
+          <article data-case>
+            <img data-wipe class="mb-6 aspect-4/5 w-full border border-hair object-cover md:hidden"
+              src={`/img/sys-0${i + 1}.png`} alt="" width="880" height="1100" loading="lazy" />
 
-            <div class="flex items-baseline gap-5">
-              <span class="font-display text-5xl font-black leading-none text-hair md:text-7xl">{s.n}</span>
-              <div>
-                <p class="font-body text-xs uppercase tracking-[0.2em] text-sage">{s.org}</p>
-                <p class="font-body text-xs uppercase tracking-[0.2em] text-muted">{s.years}</p>
+            <div data-group>
+              <div class="flex items-baseline gap-5">
+                <span class="font-display text-5xl font-black leading-none text-hair md:text-7xl">{s.n}</span>
+                <div>
+                  <p class="font-body text-xs uppercase tracking-[0.2em] text-sage">{s.org}</p>
+                  <p class="font-body text-xs uppercase tracking-[0.2em] text-muted">{s.years}</p>
+                </div>
               </div>
+
+              <h3 class="mt-5 font-display text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-5xl">{s.name}</h3>
+              <p class="mt-4 max-w-[58ch] font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">{s.body}</p>
+
+              <ul class="mt-6 flex flex-wrap gap-x-7 gap-y-2">
+                {s.facts.map((f) => (
+                  <li class="font-body text-sm tabular-nums text-bone"><span class="mr-2 text-sage">—</span>{f}</li>
+                ))}
+              </ul>
+
+              <p class="mt-6 border-l border-sage py-1 pl-4 font-editorial text-lg italic leading-snug text-bone-dim">{s.note}</p>
+              <p class="mt-5 font-body text-xs uppercase tracking-[0.15em] text-muted">{s.stack}</p>
             </div>
-
-            <h3 class="mt-6 font-display text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-5xl">
-              {s.name}
-            </h3>
-            <p class="mt-5 max-w-[58ch] font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">{s.body}</p>
-
-            <ul class="mt-7 flex flex-wrap gap-x-7 gap-y-2">
-              {s.facts.map((f) => (
-                <li class="font-body text-sm tabular-nums text-bone">
-                  <span class="mr-2 text-sage">—</span>{f}
-                </li>
-              ))}
-            </ul>
-
-            <p class="mt-6 font-body text-xs uppercase tracking-[0.15em] text-muted">{s.stack}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- ======================================================= experience -->
+  <section id="experience" class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
+    <img data-drift src="/img/band.png" alt="" aria-hidden="true"
+      class="pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-25" width="1600" height="686" loading="lazy" />
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ground via-ground/70 to-ground"></div>
+
+    <div class="relative">
+      <div data-rise class="mb-12 flex items-baseline justify-between border-b border-hair pb-4">
+        <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Experience</h2>
+        <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">2022 — now</span>
+      </div>
+
+      <div data-group>
+        {roles.map((r) => (
+          <div class="grid gap-2 border-b border-hair py-6 md:grid-cols-12 md:gap-8">
+            <p class="font-body text-xs uppercase tabular-nums tracking-[0.16em] text-muted md:col-span-2">{r.years}</p>
+            <p class="font-display text-lg font-black uppercase tracking-tight text-bone md:col-span-3 md:text-xl">{r.org}</p>
+            <p class="font-body text-sm uppercase tracking-[0.14em] text-sage md:col-span-3">{r.title}</p>
+            <p class="font-body text-sm text-bone-dim md:col-span-4">{r.what}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== capabilities -->
+  <section class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-12 flex items-baseline justify-between border-b border-hair pb-4">
+      <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Capabilities</h2>
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Things I've shipped with</span>
+    </div>
+
+    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
+      <div data-group class="md:col-span-7">
+        {caps.map((c) => (
+          <div class="grid grid-cols-1 gap-1 border-b border-hair py-4 md:grid-cols-4 md:gap-6">
+            <p class="font-body text-xs uppercase tracking-[0.18em] text-sage">{c.k}</p>
+            <p class="font-body text-sm leading-relaxed text-bone-dim md:col-span-3">{c.v}</p>
+          </div>
+        ))}
+      </div>
+      <div class="md:col-span-5">
+        <img data-wipe src="/img/stack.png" alt="Abstract layered infrastructure cross-section"
+          class="w-full border border-hair object-cover" width="1376" height="768" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
   <!-- ============================================================== oss -->
-  <section class="border-t border-hair bg-raise px-6 py-24 md:px-10 md:py-32">
-    <div class="pre mb-14 flex items-baseline justify-between border-b border-hair pb-5">
+  <section class="border-t border-hair bg-raise px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-10 flex items-baseline justify-between border-b border-hair pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Open source</h2>
       <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">LUGVITC &amp; mine</span>
     </div>
 
-    <ul>
+    <ul data-group>
       {oss.map((o) => (
-        <li class="pre border-b border-hair">
-          <a
-            href={o.href}
-            class="group flex flex-col gap-2 py-7 md:flex-row md:items-baseline md:gap-10"
-            target="_blank"
-            rel="noopener"
-          >
-            <span class="font-display text-2xl font-black uppercase tracking-tight transition-colors group-hover:text-sage md:w-72 md:shrink-0 md:text-3xl">
-              {o.name}
-            </span>
+        <li class="border-b border-hair">
+          <a href={o.href} target="_blank" rel="noopener"
+            class="group flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:gap-10">
+            <span class="font-display text-2xl font-black uppercase tracking-tight transition-colors group-hover:text-sage md:w-64 md:shrink-0 md:text-3xl">{o.name}</span>
             <span class="max-w-[54ch] flex-1 font-body text-sm text-bone-dim md:text-base">{o.note}</span>
-            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:text-right">
-              {o.stars ? `${o.stars} stars` : o.mine ? "New" : ""}
-            </span>
+            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:text-right">{o.stars}</span>
           </a>
         </li>
       ))}
@@ -243,21 +330,21 @@ const marquee = [
   </section>
 
   <!-- ========================================================== writing -->
-  <section id="writing" class="px-6 py-24 md:px-10 md:py-36">
-    <div class="pre mb-14 flex items-baseline justify-between border-b border-hair pb-5">
+  <section id="writing" class="border-t border-hair px-6 py-20 md:px-10 md:py-28">
+    <div data-rise class="mb-10 flex items-baseline justify-between border-b border-hair pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Writing</h2>
       <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Postmortems, mostly</span>
     </div>
 
-    <p class="pre max-w-[58ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
+    <p data-rise class="max-w-[58ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
       Things that broke in production, and what the fix actually was.
     </p>
 
-    <ul class="mt-12 flex flex-col">
-      <li class="pre border-t border-hair py-7">
+    <ul data-group class="mt-10">
+      <li class="border-t border-hair py-6">
         <a href="/writing/agent-review-gap" class="group block">
-          <span class="font-body text-xs uppercase tracking-[0.2em] text-sage">Published</span>
-          <h3 class="mt-2 max-w-[24ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight transition-colors group-hover:text-sage md:text-4xl">
+          <span class="font-body text-xs uppercase tracking-[0.2em] text-sage">Published — 17 Aug 2026</span>
+          <h3 class="mt-2 max-w-[26ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight transition-colors group-hover:text-sage md:text-4xl">
             61% of AI-authored pull requests are never reviewed
           </h3>
           <p class="mt-3 max-w-[58ch] font-body text-sm text-bone-dim">
@@ -265,15 +352,14 @@ const marquee = [
           </p>
         </a>
       </li>
-
       {[
         ["The outage that taught me ElastiCache cluster mode", "KEYS is blocked, deletes cross slots, and one Uvicorn worker takes the health check down with it."],
         ["Multi-tenant isolation below the application", "Postgres RLS, and what breaks when the policy is subtly wrong."],
         ["Encoding the law as a default-deny", "DPDP, PECR and CAN-SPAM as type-checked code that holds rather than sends."],
       ].map(([t, d]) => (
-        <li class="pre border-t border-hair py-7 opacity-55">
+        <li class="border-t border-hair py-6 opacity-50">
           <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Forthcoming</span>
-          <h3 class="mt-2 max-w-[24ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight md:text-4xl">{t}</h3>
+          <h3 class="mt-2 max-w-[26ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight md:text-4xl">{t}</h3>
           <p class="mt-3 max-w-[58ch] font-body text-sm text-bone-dim">{d}</p>
         </li>
       ))}
@@ -281,23 +367,38 @@ const marquee = [
   </section>
 
   <!-- ========================================================== contact -->
-  <footer id="contact" class="border-t border-hair px-6 py-24 md:px-10 md:py-32">
-    <p class="pre font-body text-xs uppercase tracking-[0.25em] text-muted">Open to remote work</p>
+  <footer id="contact" class="relative overflow-hidden border-t border-hair px-6 py-20 md:px-10 md:py-28">
+    <img data-drift src="/img/contact.png" alt="" aria-hidden="true"
+      class="pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-40" width="1600" height="686" loading="lazy" />
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ground/85 via-ground/60 to-ground"></div>
 
-    <a
-      href="mailto:work.aadityak@gmail.com"
-      class="pre mt-6 block font-display text-[10vw] font-black uppercase leading-[0.85] tracking-[-0.03em] transition-colors hover:text-sage md:text-[7vw]"
-    >
-      Say hello
-    </a>
+    <div class="relative">
+      <p data-rise class="font-body text-xs uppercase tracking-[0.25em] text-sage">Open to remote work — available now</p>
 
-    <div class="pre mt-16 flex flex-wrap items-end justify-between gap-8 border-t border-hair pt-7">
-      <ul class="flex flex-wrap gap-x-8 gap-y-2 font-body text-sm">
-        <li><a class="ul" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a></li>
-        <li><a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a></li>
-      </ul>
-      <p class="font-body text-xs uppercase tracking-[0.2em] text-muted">
+      <a href="mailto:work.aadityak@gmail.com"
+        class="mt-5 block font-display text-[13vw] font-black uppercase leading-[0.85] tracking-[-0.03em] transition-colors hover:text-sage md:text-[8vw]">
+        Say hello
+      </a>
+
+      <div data-group class="mt-12 grid gap-8 border-t border-hair pt-7 md:grid-cols-3">
+        <div>
+          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Email</p>
+          <a class="ul font-body text-sm text-bone" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a>
+        </div>
+        <div>
+          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Elsewhere</p>
+          <p class="font-body text-sm text-bone">
+            <a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
+            <a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
+          </p>
+        </div>
+        <div>
+          <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Overlap</p>
+          <p class="font-body text-sm text-bone">IST — 4+ hours with EU and US-East</p>
+        </div>
+      </div>
+
+      <p class="mt-12 font-body text-xs uppercase tracking-[0.2em] text-muted">
         Built and hosted by me — <span class="font-editorial text-sm normal-case italic tracking-normal">of course</span>
       </p>
     </div>
