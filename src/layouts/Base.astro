@@ -38,6 +38,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
 
   <body class="grain">
+    <div id="progress"></div>
+    <div id="cursor"></div>
     <slot />
 
     <script is:inline>
@@ -90,7 +92,96 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           },
           { rootMargin: "0px 0px -12% 0px", threshold: 0.1 },
         );
-        document.querySelectorAll(".pre:not([data-hero]), .mask:not([data-hero])").forEach((el) => io.observe(el));
+        document
+          .querySelectorAll(".pre:not([data-hero]), .mask:not([data-hero]), .wipe, .chars:not([data-hero])")
+          .forEach((el) => io.observe(el));
+
+        // ---- progress bar (fallback where scroll timelines are unsupported) --
+        const bar = document.getElementById("progress");
+        if (bar && !CSS.supports("animation-timeline: scroll()")) {
+          let queued = false;
+          addEventListener(
+            "scroll",
+            () => {
+              if (queued) return;
+              queued = true;
+              requestAnimationFrame(() => {
+                const max = document.body.scrollHeight - innerHeight;
+                bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+                queued = false;
+              });
+            },
+            { passive: true },
+          );
+        }
+
+        if (reduced) return;
+
+        // ---- hero parallax ---------------------------------------------------
+        // The plate drifts at a third of scroll speed. Written against a cached
+        // node and rAF-throttled — a layout read per scroll event is how these
+        // end up janky.
+        const plate = document.querySelector("[data-parallax]");
+        if (plate) {
+          let pending = false;
+          addEventListener(
+            "scroll",
+            () => {
+              if (pending) return;
+              pending = true;
+              requestAnimationFrame(() => {
+                const y = Math.min(scrollY, innerHeight) * 0.34;
+                plate.style.transform = `translate3d(0, ${y}px, 0)`;
+                pending = false;
+              });
+            },
+            { passive: true },
+          );
+        }
+
+        // ---- cursor ----------------------------------------------------------
+        const cur = document.getElementById("cursor");
+        if (cur && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+          let cx = 0, cy = 0, tx = 0, ty = 0, raf = 0;
+          const loop = () => {
+            // Lerp toward the pointer so the dot trails rather than sticks —
+            // the lag is the whole effect.
+            cx += (tx - cx) * 0.18;
+            cy += (ty - cy) * 0.18;
+            cur.style.translate = `${cx}px ${cy}px`;
+            raf = requestAnimationFrame(loop);
+          };
+          addEventListener("pointermove", (e) => {
+            tx = e.clientX;
+            ty = e.clientY;
+            cur.classList.add("on");
+            if (!raf) raf = requestAnimationFrame(loop);
+          });
+          addEventListener("pointerdown", () => cur.classList.add("big"));
+          addEventListener("pointerup", () => cur.classList.remove("big"));
+          document.querySelectorAll("a, button").forEach((el) => {
+            el.addEventListener("pointerenter", () => cur.classList.add("big"));
+            el.addEventListener("pointerleave", () => cur.classList.remove("big"));
+          });
+        }
+
+        // ---- sticky gallery --------------------------------------------------
+        // Whichever case study owns the most viewport height drives the plate.
+        const plates = [...document.querySelectorAll("[data-plate]")];
+        const cases = [...document.querySelectorAll("[data-case]")];
+        if (plates.length && cases.length) {
+          const pick = new IntersectionObserver(
+            (entries) => {
+              for (const e of entries) {
+                if (!e.isIntersecting || e.intersectionRatio < 0.35) continue;
+                const i = cases.indexOf(e.target);
+                plates.forEach((p, n) => p.classList.toggle("live", n === i));
+              }
+            },
+            { threshold: [0.35, 0.6], rootMargin: "-25% 0px -25% 0px" },
+          );
+          cases.forEach((c) => pick.observe(c));
+        }
       })();
     </script>
   </body>

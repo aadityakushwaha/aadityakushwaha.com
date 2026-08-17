@@ -136,11 +136,129 @@
   background-size: 100% 1px;
 }
 
+/* ------------------------------------------------------------- progress */
+#progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: var(--color-sage);
+  z-index: 70;
+}
+/* Scroll-driven where supported — no JS, no scroll listener, no jank. */
+@supports (animation-timeline: scroll()) {
+  #progress {
+    animation: grow linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes grow {
+    to { transform: scaleX(1); }
+  }
+}
+
+/* --------------------------------------------------------------- cursor */
+/* Hidden on touch — a follower dot on a device with no pointer is a bug. */
+#cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--color-sage);
+  pointer-events: none;
+  z-index: 90;
+  mix-blend-mode: difference;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+  opacity: 0;
+}
+#cursor.on { opacity: 1; }
+#cursor.big { transform: scale(3.4); }
+@media (hover: none), (pointer: coarse) {
+  #cursor { display: none; }
+}
+
+/* --------------------------------------------------------- hero canvas */
+/* z-index 0 rather than -1: the section is `position: relative` with auto
+   z-index, so it creates no stacking context, and a negative layer inside it
+   paints behind the BODY background rather than behind the hero text. */
+.hero-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.hero-art img {
+  width: 100%;
+  height: 118%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0;
+  transform: scale(1.14);
+  transition: opacity 1.8s ease, transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-art.in img {
+  opacity: 1;
+  transform: scale(1);
+}
+/* Fades the plate into the ground so the type never fights the artwork. */
+.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--color-ground) 0%,
+    rgba(11, 12, 11, 0.1) 34%,
+    rgba(11, 12, 11, 0.5) 74%,
+    rgba(11, 12, 11, 0.94) 100%
+  );
+}
+
+/* --------------------------------------------------- per-character rise */
+.chars span {
+  display: inline-block;
+  transform: translateY(105%);
+}
+.chars.in span {
+  transform: none;
+  transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------ sticky gallery */
+.plate {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 0.75s ease, transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plate.live {
+  opacity: 1;
+  transform: none;
+}
+
+/* Wipe a block in from the left as it enters view. */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wipe.in {
+  clip-path: inset(0 0 0 0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .pre { opacity: 1; transform: none; }
-  .mask > span { transform: none; }
+  .mask > span, .chars span { transform: none; }
   .marquee { animation: none; }
+  .hero-art img { opacity: 0.85; transform: none; }
+  .wipe { clip-path: none; }
+  #cursor { display: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

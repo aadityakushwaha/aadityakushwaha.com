@@ -81,29 +81,43 @@ const marquee = [
   </header>
 
   <!-- ============================================================= hero -->
-  <section class="relative flex min-h-svh flex-col justify-between px-6 pb-8 pt-28 md:px-10 md:pb-10">
-    <div class="mt-auto">
-      <p data-hero class="pre mb-6 max-w-[46ch] font-body text-sm text-bone-dim md:mb-10 md:text-base" style="--d:520ms">
+  <section class="relative flex min-h-svh flex-col justify-between overflow-hidden px-6 pb-8 pt-28 md:px-10 md:pb-10">
+    <div data-hero class="hero-art" style="--d:0ms">
+      <img data-parallax src="/img/hero.png" alt="" width="1376" height="768" fetchpriority="high" />
+    </div>
+
+    <div class="relative z-10 mt-auto">
+      <p data-hero class="pre mb-6 max-w-[46ch] font-body text-sm text-bone-dim md:mb-10 md:text-base" style="--d:900ms">
         I build systems that carry load — and stay explainable at 3am.
       </p>
 
       <!--
         Sized per line rather than uniformly: KUSHWAHA is eight characters and
         carries a W, so at the size AADITYA wants it runs past the right margin.
-        Setting each line to its own vw makes both terminate near the same edge,
-        which is the point of the treatment.
+        Each character is its own span so the line can rise letter by letter.
       -->
       <h1 class="font-display font-black uppercase leading-[0.82] tracking-[-0.035em]">
-        <span data-hero class="mask" style="--d:60ms"
-          ><span class="block text-[16.5vw] md:text-[14.5vw]">Aaditya</span></span
-        >
-        <span data-hero class="mask" style="--d:180ms"
-          ><span class="block text-[13.2vw] text-sage md:text-[11.6vw]">Kushwaha</span></span
-        >
+        <span class="sr-only">Aaditya Kushwaha</span>
+
+        <span data-hero class="mask block" style="--d:120ms" aria-hidden="true">
+          <span class="chars in block text-[16.5vw] md:text-[14.5vw]">
+            {"Aaditya".split("").map((c, i) => (
+              <span style={`transition-delay:${420 + i * 45}ms`}>{c}</span>
+            ))}
+          </span>
+        </span>
+
+        <span data-hero class="mask block" style="--d:240ms" aria-hidden="true">
+          <span class="chars in block text-[13.2vw] text-sage md:text-[11.6vw]">
+            {"Kushwaha".split("").map((c, i) => (
+              <span style={`transition-delay:${540 + i * 45}ms`}>{c}</span>
+            ))}
+          </span>
+        </span>
       </h1>
     </div>
 
-    <div data-hero class="pre mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-hair pt-6" style="--d:700ms">
+    <div data-hero class="pre relative z-10 mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-hair pt-6" style="--d:1150ms">
       <p class="font-body text-sm uppercase leading-snug tracking-[0.12em] text-muted">
         <span class="block whitespace-nowrap">Backend · Platform · Agentic systems</span>
         <span class="mt-1 block font-editorial text-base normal-case italic tracking-normal text-bone-dim">
@@ -137,18 +151,52 @@ const marquee = [
       <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Four of them</span>
     </div>
 
-    <div class="flex flex-col gap-20 md:gap-32">
-      {systems.map((s) => (
-        <article class="pre grid gap-6 md:grid-cols-12 md:gap-10">
-          <div class="md:col-span-3">
-            <span class="font-display text-6xl font-black leading-none text-hair md:text-8xl">{s.n}</span>
-            <p class="mt-3 font-body text-xs uppercase tracking-[0.2em] text-sage">{s.org}</p>
-            <p class="font-body text-xs uppercase tracking-[0.2em] text-muted">{s.years}</p>
-          </div>
+    <!--
+      Two tracks: the left plate is sticky and swaps as the right column
+      scrolls, so the artwork changes without the reader losing their place.
+      On narrow screens the plate rides above each entry instead.
+    -->
+    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
+      <div class="hidden md:col-span-5 md:block">
+        <div class="sticky top-24 aspect-4/5 overflow-hidden border border-hair bg-raise">
+          {systems.map((s, i) => (
+            <img
+              data-plate
+              class={`plate h-full w-full object-cover${i === 0 ? " live" : ""}`}
+              src={`/img/sys-0${i + 1}.png`}
+              alt={`Abstract diagram — ${s.name}`}
+              width="880"
+              height="1100"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          ))}
+        </div>
+      </div>
 
-          <div class="md:col-span-9">
-            <h3 class="font-display text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-6xl">{s.name}</h3>
-            <p class="mt-5 max-w-[62ch] font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">{s.body}</p>
+      <div class="flex flex-col gap-24 md:col-span-7 md:gap-44">
+        {systems.map((s, i) => (
+          <article data-case class="pre">
+            <img
+              class="wipe mb-7 aspect-4/5 w-full border border-hair object-cover md:hidden"
+              src={`/img/sys-0${i + 1}.png`}
+              alt={`Abstract diagram — ${s.name}`}
+              width="880"
+              height="1100"
+              loading="lazy"
+            />
+
+            <div class="flex items-baseline gap-5">
+              <span class="font-display text-5xl font-black leading-none text-hair md:text-7xl">{s.n}</span>
+              <div>
+                <p class="font-body text-xs uppercase tracking-[0.2em] text-sage">{s.org}</p>
+                <p class="font-body text-xs uppercase tracking-[0.2em] text-muted">{s.years}</p>
+              </div>
+            </div>
+
+            <h3 class="mt-6 font-display text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-5xl">
+              {s.name}
+            </h3>
+            <p class="mt-5 max-w-[58ch] font-body text-[15px] leading-relaxed text-bone-dim md:text-lg">{s.body}</p>
 
             <ul class="mt-7 flex flex-wrap gap-x-7 gap-y-2">
               {s.facts.map((f) => (
@@ -159,9 +207,9 @@ const marquee = [
             </ul>
 
             <p class="mt-6 font-body text-xs uppercase tracking-[0.15em] text-muted">{s.stack}</p>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
