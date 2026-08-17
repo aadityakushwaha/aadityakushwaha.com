@@ -243,9 +243,6 @@
 
 /* A flood tall enough to own the screen. svh so mobile browser chrome doesn't
    clip it, and the image is over-tall to leave room for parallax travel. */
-.flood-tall {
-  min-height: 82svh;
-}
 .flood img {
   width: 100%;
   height: 118%;
@@ -410,4 +407,28 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal-word { color: var(--color-bone); }
+}
+
+/* ==========================================================================
+   NAME FIT
+   The name is sized from its own container, not the viewport. It sits in an
+   8-of-12 column beside the systems index, so vw units describe the wrong box
+   and the longer line wraps — which is how KUSHWAHA lost its final A.
+   cqw is a percentage of THIS container, so the two lines stay locked to two
+   lines at every width, including when section padding changes.
+   ========================================================================== */
+.name-fit {
+  container-type: inline-size;
+}
+.name-line {
+  display: block;
+  white-space: nowrap; /* belt and braces: never wrap, at any size */
+}
+/* Ratios derived from Archivo Black's average advance width: ~0.63em per
+   character for AADITYA (7), and wider for KUSHWAHA (8) because of the W. */
+.name-line--1 {
+  font-size: 19.5cqw;
+}
+.name-line--2 {
+  font-size: 14.7cqw;
 }
