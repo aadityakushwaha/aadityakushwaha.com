@@ -15,8 +15,8 @@ panels:
     value: "141"
   - label: "RLS integration suites"
     value: "8"
-  - label: "Database roles that may bypass"
-    value: "1"
+  - label: "Roles that may bypass, of three"
+    value: "2"
 ---
 
 Every multi-tenant application starts with the same rule: never return one tenant's rows to another. And in most of them, that rule lives in application code — a `WHERE tenant_id = ?` repeated across every query, held in place by code review and habit.
@@ -56,12 +56,19 @@ Four details in there earn their place.
 
 ## Two roles, two sessions
 
-The policy is only half of it. The other half is that the application connects as a role which **cannot** bypass RLS:
+The policy is only half of it. The other half is that the application connects as a role which **cannot** bypass RLS. There are three:
 
-- `blitz_app` — `NOBYPASSRLS`. Every request path uses it.
-- `blitz_platform` — `BYPASSRLS`. Workers, migrations, retention, and the test harness use it.
+| Role | Used by | RLS |
+|---|---|---|
+| `blitz` | Alembic migrations only | superuser — bypasses |
+| `blitz_app` | Every request path | `NOSUPERUSER NOBYPASSRLS` — enforced |
+| `blitz_platform` | Workers, retention, platform admin, test harness | `NOSUPERUSER BYPASSRLS` |
 
-Two engines, two sessionmakers, and a session helper that binds the GUCs so the policy has something to read:
+Three connection strings, and the rule that matters is: **never use `blitz` at runtime.** It is a superuser, so it silently bypasses every policy on the page — no error, no warning, just complete data. It exists because migrations must create the tables the policies are attached to, and that is the only thing it is allowed to do.
+
+This is also the concrete reason `FORCE` above is not optional. The migration role owns the tables, and an owner bypasses its own RLS by default.
+
+Two engines for the two runtime roles, two sessionmakers, and a session helper that binds the GUCs so the policy has something to read:
 
 ```python
 async with maker() as session, session.begin():
@@ -132,4 +139,4 @@ RLS is not a substitute for authorisation. It answers "which tenant's rows is th
 
 What it buys is a floor. Below a certain kind of mistake, the database says no. A forgotten `WHERE` clause returns an empty list instead of a stranger's data; a compromised query path leaks nothing across the tenant boundary; a well-meaning migration script run against production sees only what its GUC allows.
 
-The cost is real: two connection roles to manage, a GUC contract to keep, a helper every migration must remember to call, and the composition problem above, which you will meet eventually. That is a much better set of problems than trusting 141 migrations' worth of hand-written predicates — and unlike diligence, it holds while you are asleep.
+The cost is real: three database roles to manage and keep straight, a GUC contract to keep, a helper every migration must remember to call, and the composition problem above, which you will meet eventually. That is a much better set of problems than trusting 141 migrations' worth of hand-written predicates — and unlike diligence, it holds while you are asleep.
