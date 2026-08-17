@@ -79,24 +79,56 @@ const posts = [
     title: "61% of AI-authored pull requests are never reviewed",
     note: "What we removed when the author stopped being someone you could ask.",
     read: "8 min",
+    date: "17 Aug 2026",
+  },
+  {
+    href: "/writing/the-backup-that-failed-in-ninety-milliseconds",
+    title: "The backup that failed in ninety milliseconds",
+    note: "Three weeks of nightly failures, every one recorded and never surfaced.",
+    read: "8 min",
+    date: "17 Aug 2026",
+  },
+  {
+    href: "/writing/one-pdf-at-a-time",
+    title: "One PDF at a time",
+    note: "pdfium crashes two ways, and the fix moves the parallelism to processes.",
+    read: "8 min",
+    date: "17 Aug 2026",
+  },
+  {
+    href: "/writing/two-ways-a-parser-lies",
+    title: "Two ways a parser lies about being right",
+    note: "A fabricated zero, and a score measured on the field you matched by.",
+    read: "9 min",
+    date: "17 Aug 2026",
+  },
+  {
+    href: "/writing/the-document-your-editor-rewrote",
+    title: "The document your editor quietly rewrote",
+    note: "Ten data-loss findings. The one still open destroys content on open.",
+    read: "11 min",
+    date: "16 Aug 2026",
   },
   {
     href: "/writing/elasticache-cluster-mode",
     title: "The outage that taught me ElastiCache cluster mode",
     note: "KEYS is blocked, deletes cross slots, and one Uvicorn worker takes the health check down with it.",
     read: "9 min",
+    date: "17 Aug 2026",
   },
   {
     href: "/writing/rls-below-the-application",
     title: "Multi-tenant isolation below the application",
     note: "Postgres RLS, and what breaks when the policy is subtly wrong.",
     read: "10 min",
+    date: "17 Aug 2026",
   },
   {
     href: "/writing/law-as-default-deny",
     title: "Encoding the law as a default-deny",
     note: "DPDP, PECR and CAN-SPAM as reviewable code that holds rather than sends.",
     read: "9 min",
+    date: "17 Aug 2026",
   },
 ];
 
@@ -439,7 +471,7 @@ const now = [
         <li class="border-t border-hair">
           <a href={p.href} class="group flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:gap-10">
             <span class="shrink-0 font-body text-xs uppercase tracking-[0.2em] text-sage md:w-44">
-              17 Aug 2026 · {p.read}
+              {p.date} · {p.read}
             </span>
             <span class="block">
               <h3 class="max-w-[26ch] font-display text-2xl font-black uppercase leading-[0.98] tracking-tight transition-colors group-hover:text-sage md:text-4xl">
