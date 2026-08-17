@@ -44,9 +44,9 @@ const roles = [
   { years: "2023 — now", org: "Altacee", title: "Full-Stack & Platform Engineer", what: "Product studio. Multi-tenant LMS, marketing suite, CRM, self-hosted platform and network." },
   { years: "2024 — 2025", org: "AIKO-1", title: "Full-Stack Engineer", what: "Consumer Flutter app, bulk image generation, investor tooling, messaging and ad services." },
   { years: "2025", org: "The HW Store", title: "Engineer", what: "Collector app, marketplace crawler, ML pricing service, unified search API." },
-  { years: "2024 — 2025", org: "Cyber-Team", title: "Security Engineer", what: "Dockerised CTF platform, XSS detection tooling, security write-ups and course material." },
+  { years: "2024 — 2025", org: "Cyber-Team", title: "Security Engineer", what: "Security research and CTF work with the team; write-ups and internal course material." },
   { years: "2023 — 2026", org: "Kazmik Group", title: "Engineer", what: "LMS, payments with an operations dashboard, event management, salon booking." },
-  { years: "2022 — now", org: "LUGVITC", title: "Contributor & Maintainer", what: "Open-source platforms and tooling used across the university." },
+  { years: "2022 — now", org: "LUGVITC", title: "Member & Contributor", what: "University Linux Users Group. Contributed to the group's public site; ran workshops and events." },
 ];
 
 const caps = [
@@ -59,12 +59,15 @@ const caps = [
   { k: "AI", v: "MCP server development · Anthropic & Gemini APIs · pgvector RAG · agent orchestration" },
 ];
 
+// Only repositories I actually committed to, with my own commit count rather
+// than the repo's star count — stars measure a project, commits measure me.
 const oss = [
-  { name: "worklog-mcp", stars: "New", note: "Six tools that let a coding agent record what it did and why. JSONL, no backend.", href: "https://github.com/aadityakushwaha/worklog-mcp" },
-  { name: "whats4linux", stars: "29★", note: "Unofficial WhatsApp desktop client for Linux, in Go.", href: "https://github.com/lugvitc/whats4linux" },
-  { name: "pwncore", stars: "17★", note: "CTF platform backend — dynamic per-team flags, Docker-per-team.", href: "https://github.com/lugvitc/pwncore" },
-  { name: "lugtype", stars: "4★", note: "Monkeytype fork with an original OneRandom mode.", href: "https://github.com/lugvitc/lugtype" },
-  { name: "enigma25", stars: "4★", note: "Front end for the Enigma 2025 event.", href: "https://github.com/lugvitc/enigma25" },
+  { name: "worklog-mcp", meta: "Author", note: "Six tools that let a coding agent record what it did and why. JSONL, no backend.", href: "https://github.com/aadityakushwaha/worklog-mcp" },
+  { name: "dockation", meta: "10 commits", note: "Docker orchestration helper in Go.", href: "https://github.com/Altacee/dockation" },
+  { name: "webrtc-karaoke", meta: "8 commits", note: "Peer-to-peer karaoke over WebRTC — signalling, media negotiation, sync.", href: "https://github.com/Altacee/webrtc-karaoke" },
+  { name: "DWCrawler", meta: "9 commits", note: "Tor crawler with automated content classification and structured extraction.", href: "https://github.com/aadityakushwaha/DWCrawler" },
+  { name: "aVim", meta: "11 commits", note: "Neovim configuration in Lua — LSP, treesitter, tuned for Python and TypeScript.", href: "https://github.com/aadityakushwaha/aVim" },
+  { name: "lugvitc.github.io", meta: "10 commits", note: "Landing site for the university Linux Users Group.", href: "https://github.com/lugvitc/lugvitc.github.io" },
 ];
 
 const marquee = ["FASTAPI", "POSTGRESQL", "ROW-LEVEL SECURITY", "REDIS", "POSTGIS", "PGVECTOR", "FLUTTER", "NEXT.JS", "TYPESCRIPT", "PROXMOX", "TAILSCALE", "OPNSENSE", "DOCKER SWARM", "MCP", "ARQ", "TRAEFIK"];
@@ -312,7 +315,7 @@ const now = [
   <section class="border-t border-hair bg-raise px-6 py-20 md:px-10 md:py-28">
     <div data-rise class="mb-10 flex items-baseline justify-between border-b border-hair pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Open source</h2>
-      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">LUGVITC &amp; mine</span>
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-muted">Repos I committed to</span>
     </div>
 
     <ul data-group>
@@ -322,7 +325,7 @@ const now = [
             class="group flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:gap-10">
             <span class="font-display text-2xl font-black uppercase tracking-tight transition-colors group-hover:text-sage md:w-64 md:shrink-0 md:text-3xl">{o.name}</span>
             <span class="max-w-[54ch] flex-1 font-body text-sm text-bone-dim md:text-base">{o.note}</span>
-            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:text-right">{o.stars}</span>
+            <span class="font-body text-xs uppercase tracking-[0.2em] text-muted md:text-right">{o.meta}</span>
           </a>
         </li>
       ))}
