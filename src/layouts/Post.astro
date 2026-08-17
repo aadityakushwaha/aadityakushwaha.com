@@ -12,6 +12,7 @@ interface Props {
     figure?: string;
     figureAlt?: string;
     panels?: { label: string; value: string; note?: string }[];
+    tool?: { name: string; href: string; note: string; label?: string };
   };
   headings?: { depth: number; slug: string; text: string }[];
 }
@@ -146,16 +147,18 @@ const toc = headings.filter((h) => h.depth === 2);
             </figure>
           )}
 
-          <div>
-            <p class="eyebrow mb-3">The tool</p>
-            <a href="https://github.com/aadityakushwaha/worklog-mcp" target="_blank" rel="noopener"
-              class="group block border-t border-hair/60 py-3">
-              <span class="block font-display text-lg font-black uppercase tracking-tight transition-colors group-hover:text-sage">worklog-mcp</span>
-              <span class="mt-1 block font-body text-[13px] leading-snug text-bone-dim">
-                MIT · TypeScript · one block of config
-              </span>
-            </a>
-          </div>
+          {/* Only where the article actually has a companion repo — a rail
+              plugging worklog-mcp under a Postgres piece is just noise. */}
+          {fm.tool && (
+            <div>
+              <p class="eyebrow mb-3">{fm.tool.label ?? "The tool"}</p>
+              <a href={fm.tool.href} target="_blank" rel="noopener"
+                class="group block border-t border-hair/60 py-3">
+                <span class="block font-display text-lg font-black uppercase tracking-tight transition-colors group-hover:text-sage">{fm.tool.name}</span>
+                <span class="mt-1 block font-body text-[13px] leading-snug text-bone-dim">{fm.tool.note}</span>
+              </a>
+            </div>
+          )}
 
           <div>
             <p class="eyebrow mb-3">Elsewhere</p>

@@ -8,6 +8,10 @@ kicker: "Postmortem — agent workflows"
 hero: "/img/post-hero.png"
 figure: "/img/post-fig.png"
 figureAlt: "Merges land; the reasoning that produced them does not."
+tool:
+  name: "worklog-mcp"
+  href: "https://github.com/aadityakushwaha/worklog-mcp"
+  note: "MIT · TypeScript · one block of config"
 panels:
   - label: "Agent PRs with no recorded review"
     value: "61.4%"
