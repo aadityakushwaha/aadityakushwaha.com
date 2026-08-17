@@ -48,7 +48,14 @@ ready(() => {
     }
   }
 
-  if (reduced || !loader || !count) {
+  // The loader is a first-impression device, not a fixture. Showing it again on
+  // every internal navigation delays the largest contentful paint for someone
+  // who has already seen it — and LCP is measured on every page load, not the
+  // first one.
+  const seen = sessionStorage.getItem("ak:seen") === "1";
+  sessionStorage.setItem("ak:seen", "1");
+
+  if (reduced || seen || !loader || !count) {
     loader?.remove();
     document.querySelectorAll<HTMLElement>("[data-chars] span, [data-hero]").forEach((el) => {
       el.style.opacity = "1";
@@ -59,7 +66,7 @@ ready(() => {
     // Motion drives the counter too, so the number and the fade share one clock.
     const c = { v: 0 };
     animate(c, { v: 100 }, {
-      duration: 1.4,
+      duration: 0.9,
       ease: "easeOut",
       onUpdate: () => (count.textContent = String(Math.round(c.v)).padStart(3, "0")),
     }).then(() => {

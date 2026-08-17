@@ -5,8 +5,8 @@ description: "Cold email is regulated differently in every country, and the regi
 date: 2026-08-17
 status: "9 min read"
 kicker: "Design — outbound compliance"
-hero: "/img/gate-hero.png"
-figure: "/img/gate-fig.png"
+hero: "/img/gate-hero.webp"
+figure: "/img/gate-fig.webp"
 figureAlt: "Most of the map is unverified. Unverified is held, not sent."
 panels:
   - label: "Companies in the pipeline"

@@ -5,8 +5,8 @@ description: "Three weeks of nightly backups, every one an instant failure, ever
 date: 2026-08-17
 status: "8 min read"
 kicker: "Audit — self-hosted infrastructure"
-hero: "/img/backup-hero.png"
-figure: "/img/backup-fig.png"
+hero: "/img/backup-hero.webp"
+figure: "/img/backup-fig.webp"
 figureAlt: "Two identically configured jobs. One completes; one stops at the first step."
 panels:
   - label: "Recorded runs, all failed"

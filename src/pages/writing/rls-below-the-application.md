@@ -5,8 +5,8 @@ description: "Postgres row-level security turns tenant isolation from a promise 
 date: 2026-08-17
 status: "10 min read"
 kicker: "Architecture — multi-tenant LMS"
-hero: "/img/rls-hero.png"
-figure: "/img/rls-fig.png"
+hero: "/img/rls-hero.webp"
+figure: "/img/rls-fig.webp"
 figureAlt: "Same query, two connections. One passes through the policy; one is allowed to bypass it."
 panels:
   - label: "Tables under tenant RLS"

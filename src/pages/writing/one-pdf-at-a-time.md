@@ -5,8 +5,8 @@ description: "pdfium crashes two ways: one instance per document SIGTRAPs, and c
 date: 2026-08-17
 status: "8 min read"
 kicker: "Postmortem — document parser"
-hero: "/img/pdf-hero.png"
-figure: "/img/pdf-fig.png"
+hero: "/img/pdf-hero.webp"
+figure: "/img/pdf-fig.webp"
 figureAlt: "One shared library, one lock, eight threads that have to wait."
 panels:
   - label: "pdfium instances per process"

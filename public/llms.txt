@@ -1,0 +1,39 @@
+# Aaditya Kushwaha
+
+> Backend and platform engineer in Lucknow, India, working remotely. Four years
+> shipping production systems end to end: FastAPI services, multi-tenant Postgres
+> with row-level security, Next.js consoles, Flutter apps, and the self-hosted
+> network they run on. Open to remote backend and platform roles.
+
+Every number on this site came out of a repository or a live system, not a
+memory. The writing is production postmortems — what broke, why the tests did
+not catch it, and what the fix actually was.
+
+## Writing
+
+- [The backup that failed in ninety milliseconds](https://aadityakushwaha.com/writing/the-backup-that-failed-in-ninety-milliseconds): Three weeks of nightly Postgres backups failing in 91ms because the job named the service instead of the database, recorded every time and surfaced nowhere. Monitor the artefact, alert on staleness.
+- [Multi-tenant isolation below the application](https://aadityakushwaha.com/writing/rls-below-the-application): Postgres row-level security across 114 tables, three database roles, FORCE vs ENABLE, and the permissive bypass policy that handed a platform admin every tenant's rows.
+- [The outage that taught me ElastiCache cluster mode](https://aadityakushwaha.com/writing/elasticache-cluster-mode): KEYS is blocked, multi-key DELETE crosses hash slots, arq's enqueue fails on cluster mode — and one Uvicorn worker turned a cache failure into an outage by taking the health check with it.
+- [Two ways a parser lies about being right](https://aadityakushwaha.com/writing/two-ways-a-parser-lies): A fabricated zero scores as a correct extraction, and per-field accuracy measured on the key you matched rows by is 1.0 by construction.
+- [One PDF at a time](https://aadityakushwaha.com/writing/one-pdf-at-a-time): pdfium SIGTRAPs on a second instance and segfaults on concurrent calls; the fix is a process singleton, a global guard, and parallelism moved to processes.
+- [The document your editor quietly rewrote](https://aadityakushwaha.com/writing/the-document-your-editor-rewrote): Ten data-loss findings in a rich-text course editor, including lossy hydration that silently persists a reduced document over the original.
+- [Encoding the law as a default-deny](https://aadityakushwaha.com/writing/law-as-default-deny): Cold-email compliance as a function returning a verdict and a statutory basis — DPDP, PECR reg 22, CAN-SPAM, UWG s.7(2) — where the default is hold, not send.
+- [61% of AI-authored pull requests are never reviewed](https://aadityakushwaha.com/writing/agent-review-gap): What disappears when the author of a diff is not someone you can ask, and recording an agent's reasoning as a build artifact.
+
+## Systems
+
+- Ride-hailing platform (Aerovahan, 2025–2026): dispatch and matching, driver-offer caps, dynamic surge, demand forecasting. 863 commits, 94 routers, 110 services.
+- School-transport safety (Aero Squad, 2026): real-time bus tracking, offline TOTP gate check, KYC pipeline behind circuit breakers. Zero to shipped in 10 weeks.
+- Multi-tenant AI LMS (Blitzlearning, 2026): tenant isolation enforced by Postgres RLS, SCORM/cmi5/AICC delivery, pgvector and Meilisearch.
+- Self-hosted estate (Altacee, 2024–now): dual-WAN, 802.1Q segmentation, 17 interfaces, 2 Proxmox estates, ~65-node tailnet, provisioning through an MCP server as typed audited operations.
+
+## Open source
+
+- [worklog-mcp](https://github.com/aadityakushwaha/worklog-mcp): MCP server, six tools that let a coding agent record what it did and why. MIT, TypeScript, JSONL sink.
+
+## Contact
+
+- Email: work.aadityak@gmail.com
+- GitHub: https://github.com/aadityakushwaha
+- LinkedIn: https://linkedin.com/in/aadityakushwaha
+- Feed: https://aadityakushwaha.com/rss.xml

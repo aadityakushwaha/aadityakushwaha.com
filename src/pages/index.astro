@@ -75,56 +75,56 @@ const marquee = ["FASTAPI", "POSTGRESQL", "ROW-LEVEL SECURITY", "REDIS", "POSTGI
 // Newest first. `read` is the same string the article's own header shows.
 const posts = [
   {
-    href: "/writing/agent-review-gap",
+    href: "/writing/agent-review-gap/",
     title: "61% of AI-authored pull requests are never reviewed",
     note: "What we removed when the author stopped being someone you could ask.",
     read: "8 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/the-backup-that-failed-in-ninety-milliseconds",
+    href: "/writing/the-backup-that-failed-in-ninety-milliseconds/",
     title: "The backup that failed in ninety milliseconds",
     note: "Three weeks of nightly failures, every one recorded and never surfaced.",
     read: "8 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/one-pdf-at-a-time",
+    href: "/writing/one-pdf-at-a-time/",
     title: "One PDF at a time",
     note: "pdfium crashes two ways, and the fix moves the parallelism to processes.",
     read: "8 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/two-ways-a-parser-lies",
+    href: "/writing/two-ways-a-parser-lies/",
     title: "Two ways a parser lies about being right",
     note: "A fabricated zero, and a score measured on the field you matched by.",
     read: "9 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/the-document-your-editor-rewrote",
+    href: "/writing/the-document-your-editor-rewrote/",
     title: "The document your editor quietly rewrote",
     note: "Ten data-loss findings. The one still open destroys content on open.",
     read: "11 min",
     date: "16 Aug 2026",
   },
   {
-    href: "/writing/elasticache-cluster-mode",
+    href: "/writing/elasticache-cluster-mode/",
     title: "The outage that taught me ElastiCache cluster mode",
     note: "KEYS is blocked, deletes cross slots, and one Uvicorn worker takes the health check down with it.",
     read: "9 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/rls-below-the-application",
+    href: "/writing/rls-below-the-application/",
     title: "Multi-tenant isolation below the application",
     note: "Postgres RLS, and what breaks when the policy is subtly wrong.",
     read: "10 min",
     date: "17 Aug 2026",
   },
   {
-    href: "/writing/law-as-default-deny",
+    href: "/writing/law-as-default-deny/",
     title: "Encoding the law as a default-deny",
     note: "DPDP, PECR and CAN-SPAM as reviewable code that holds rather than sends.",
     read: "9 min",
@@ -170,7 +170,12 @@ const now = [
       page appears to open rather than to scroll.
     -->
     <div data-frame class="hero-art scrim">
-      <img data-parallax src="/img/hero.png" alt="" width="1376" height="768" fetchpriority="high" />
+      <!-- The LCP element. AVIF first (≈20% smaller than WebP here), eager, and
+           high priority so it is not queued behind the font stylesheet. -->
+      <picture>
+        <source srcset="/img/hero.avif" type="image/avif" />
+        <img data-parallax src="/img/hero.webp" alt="" width="1376" height="768"
+          fetchpriority="high" decoding="async" /></picture>
     </div>
 
     <div class="relative z-10 flex flex-1 flex-col justify-end">
@@ -261,7 +266,7 @@ const now = [
   <!-- ============================================================ flood -->
   <section class="flood scrim my-4 flex min-h-[56svh] items-center py-24 md:my-8 md:min-h-[62svh] md:py-28">
     <div class="dissolve absolute inset-0 overflow-hidden">
-        <img data-drift src="/img/flood-1.png" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
+        <img data-drift src="/img/flood-1.webp" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
       </div>
     <div class="relative z-10 w-full px-6 md:px-10 xl:px-16 2xl:px-24">
       <p data-rise class="eyebrow">The work</p>
@@ -276,7 +281,7 @@ const now = [
   <section id="work" class="px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
     <div class="grid gap-10 md:grid-cols-12 md:gap-14">
       <div class="md:col-span-5">
-        <img data-wipe src="/img/about.png" alt="Abstract schematic of a distributed backend"
+        <img data-wipe src="/img/about.webp" alt="Abstract schematic of a distributed backend"
           class="dissolve-all negate w-full object-cover" width="880" height="1100" loading="lazy" />
       </div>
 
@@ -327,8 +332,8 @@ const now = [
         <div class="dissolve-all sticky top-20 aspect-4/5">
           {systems.map((s, i) => (
             <img data-plate class="plate h-full w-full object-cover" style={i === 0 ? "opacity:1" : ""}
-              src={`/img/sys-0${i + 1}.png`} alt={`Abstract diagram — ${s.name}`}
-              width="880" height="1100" loading={i === 0 ? "eager" : "lazy"} />
+              src={`/img/sys-0${i + 1}.webp`} alt={`Abstract diagram — ${s.name}`}
+              width="880" height="1100" loading="lazy" decoding="async" />
           ))}
         </div>
       </div>
@@ -337,7 +342,7 @@ const now = [
         {systems.map((s, i) => (
           <article data-case>
             <img data-wipe class="dissolve-all mb-6 aspect-4/5 w-full object-cover md:hidden"
-              src={`/img/sys-0${i + 1}.png`} alt="" width="880" height="1100" loading="lazy" />
+              src={`/img/sys-0${i + 1}.webp`} alt="" width="880" height="1100" loading="lazy" />
 
             <div data-group>
               <div class="flex items-baseline gap-5">
@@ -370,7 +375,7 @@ const now = [
   <!-- ============================================================ flood -->
   <section class="flood scrim my-4 flex min-h-[56svh] items-center py-24 md:my-8 md:min-h-[62svh] md:py-28">
     <div class="dissolve absolute inset-0 overflow-hidden">
-        <img data-drift src="/img/flood-3.png" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
+        <img data-drift src="/img/flood-3.webp" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
       </div>
     <div class="relative z-10 w-full px-6 md:px-10 xl:px-16 2xl:px-24">
       <p data-rise class="eyebrow">Where it ran</p>
@@ -383,7 +388,7 @@ const now = [
 
   <!-- ======================================================= experience -->
   <section id="experience" class="relative overflow-hidden px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
-    <img data-drift src="/img/band.png" alt="" aria-hidden="true"
+    <img data-drift src="/img/band.webp" alt="" aria-hidden="true"
       class="dissolve pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-30" width="1600" height="686" loading="lazy" />
 
     <div class="relative">
@@ -422,7 +427,7 @@ const now = [
         ))}
       </div>
       <div class="md:col-span-5">
-        <img data-wipe src="/img/stack.png" alt="Abstract layered infrastructure cross-section"
+        <img data-wipe src="/img/stack.webp" alt="Abstract layered infrastructure cross-section"
           class="dissolve-all negate w-full object-cover" width="1376" height="768" loading="lazy" />
       </div>
     </div>
@@ -459,7 +464,7 @@ const now = [
   <section id="writing" class="px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
     <div data-rise class="mb-10 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Writing</h2>
-      <span class="eyebrow">Postmortems, mostly</span>
+      <a href="/writing/" class="ul eyebrow">All postmortems →</a>
     </div>
 
     <p data-rise class="max-w-[58ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
@@ -489,7 +494,7 @@ const now = [
 
   <!-- ========================================================== contact -->
   <footer id="contact" class="relative overflow-hidden px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
-    <img data-drift src="/img/contact.png" alt="" aria-hidden="true"
+    <img data-drift src="/img/contact.webp" alt="" aria-hidden="true"
       class="dissolve pointer-events-none absolute inset-0 h-[130%] w-full object-cover opacity-45" width="1600" height="686" loading="lazy" />
 
     <div class="relative">
@@ -564,7 +569,7 @@ const now = [
           fade was supposed to be.
         -->
         <div class="dissolve-all relative h-[32rem] overflow-hidden">
-          <img data-drift src="/img/contact-plate.png" alt="" aria-hidden="true"
+          <img data-drift src="/img/contact-plate.webp" alt="" aria-hidden="true"
             class="absolute inset-0 h-[120%] w-full object-cover opacity-80" width="896" height="1195" loading="lazy" />
         </div>
         <figcaption class="mt-5 border-t border-hair pt-4 font-body text-[13px] leading-relaxed text-bone-dim">

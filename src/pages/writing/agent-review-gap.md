@@ -5,8 +5,8 @@ description: "A study of 33,596 agent-written PRs found most receive no recorded
 date: 2026-08-17
 status: "8 min read"
 kicker: "Postmortem — agent workflows"
-hero: "/img/post-hero.png"
-figure: "/img/post-fig.png"
+hero: "/img/post-hero.webp"
+figure: "/img/post-fig.webp"
 figureAlt: "Merges land; the reasoning that produced them does not."
 tool:
   name: "worklog-mcp"

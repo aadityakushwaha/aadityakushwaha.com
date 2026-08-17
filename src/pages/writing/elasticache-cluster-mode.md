@@ -5,8 +5,8 @@ description: "Redis and ElastiCache Serverless are not the same database. Four a
 date: 2026-08-17
 status: "9 min read"
 kicker: "Postmortem — ride-hailing platform"
-hero: "/img/redis-hero.png"
-figure: "/img/redis-fig.png"
+hero: "/img/redis-hero.webp"
+figure: "/img/redis-fig.webp"
 figureAlt: "One worker: the health probe queues behind stalled requests. Two workers: it doesn't."
 panels:
   - label: "Consecutive failures to open the breaker"

@@ -20,6 +20,73 @@ const { frontmatter: fm, headings = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const shown = new Date(fm.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 const toc = headings.filter((h) => h.depth === 2);
+
+/** Same plate, AVIF variant. Every image ships as both. */
+const avif = (src: string) => src.replace(/\.webp$/, ".avif");
+
+/**
+ * Sibling articles, read from the pages themselves so a new post appears in
+ * every other post's rail without anyone maintaining a list. Three of them:
+ * enough to give a crawler somewhere to go, few enough to stay a rail.
+ */
+const all = Object.values(
+  import.meta.glob<{ frontmatter: { title: string; description: string; date: string }; url: string }>(
+    "../pages/writing/*.md",
+    { eager: true },
+  ),
+);
+const related = all
+  .filter((p) => p.frontmatter.title !== fm.title)
+  .sort((a, b) => +new Date(b.frontmatter.date) - +new Date(a.frontmatter.date))
+  .slice(0, 3);
+
+const ogImage = new URL(fm.hero ?? "/img/hero.webp", Astro.site);
+const words = fm.status?.match(/\d+/)?.[0];
+
+/**
+ * BlogPosting + Person, because AI answer engines resolve entities from
+ * structured data far more literally than a crawler ever did — an article
+ * whose author is a string is an article with no author.
+ */
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": `${canonical}#article`,
+      headline: fm.title,
+      description: fm.description,
+      datePublished: fm.date,
+      dateModified: fm.date,
+      image: ogImage.href,
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      wordCount: words ? Number(words) * 200 : undefined,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonical.href },
+      author: { "@id": "https://aadityakushwaha.com/#person" },
+      publisher: { "@id": "https://aadityakushwaha.com/#person" },
+    },
+    {
+      "@type": "Person",
+      "@id": "https://aadityakushwaha.com/#person",
+      name: "Aaditya Kushwaha",
+      url: "https://aadityakushwaha.com/",
+      jobTitle: "Backend & Platform Engineer",
+      sameAs: [
+        "https://github.com/aadityakushwaha",
+        "https://linkedin.com/in/aadityakushwaha",
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://aadityakushwaha.com/" },
+        { "@type": "ListItem", position: 2, name: "Writing", item: "https://aadityakushwaha.com/writing/" },
+        { "@type": "ListItem", position: 3, name: fm.title, item: canonical.href },
+      ],
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -33,7 +100,20 @@ const toc = headings.filter((h) => h.depth === 2);
     <meta property="og:type" content="article" />
     <meta property="og:title" content={fm.title} />
     <meta property="og:description" content={fm.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Aaditya Kushwaha" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={fm.title} />
+    <meta property="article:published_time" content={fm.date} />
+    <meta property="article:author" content="Aaditya Kushwaha" />
+    <meta name="author" content="Aaditya Kushwaha" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fm.title} />
+    <meta name="twitter:description" content={fm.description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#0b0c0b" />
+    <link rel="alternate" type="application/rss+xml" title="Aaditya Kushwaha — Writing" href="/rss.xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -54,7 +134,7 @@ const toc = headings.filter((h) => h.depth === 2);
     <header class="fixed inset-x-0 top-0 z-50">
       <nav class="flex items-center justify-between px-6 py-5 md:px-10">
         <a href="/" class="font-display text-sm font-black tracking-tight text-bone">AK</a>
-        <a href="/#writing" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">← All writing</a>
+        <a href="/writing/" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">← All writing</a>
       </nav>
     </header>
 
@@ -82,8 +162,11 @@ const toc = headings.filter((h) => h.depth === 2);
 
     {fm.hero && (
       <figure class="flood dissolve relative mb-4 h-[38svh] overflow-hidden md:mb-10 md:h-[52svh]">
-        <img data-drift class="h-[128%] w-full object-cover opacity-70" src={fm.hero} alt="" aria-hidden="true"
-          width="1376" height="768" />
+        <picture>
+          <source srcset={avif(fm.hero)} type="image/avif" />
+          <img data-drift class="h-[128%] w-full object-cover opacity-70" src={fm.hero} alt="" aria-hidden="true"
+            width="1376" height="768" fetchpriority="high" decoding="async" />
+        </picture>
       </figure>
     )}
 
@@ -131,7 +214,7 @@ const toc = headings.filter((h) => h.depth === 2);
             Written by Aaditya Kushwaha —
             <a class="ul" href="mailto:work.aadityak@gmail.com">get in touch</a>
           </p>
-          <a href="/#writing" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">More writing →</a>
+          <a href="/writing/" class="ul font-body text-xs uppercase tracking-[0.18em] text-bone">More writing →</a>
         </div>
       </article>
 
@@ -140,7 +223,10 @@ const toc = headings.filter((h) => h.depth === 2);
         <div class="sticky top-28 flex flex-col gap-8">
           {fm.figure && (
             <figure>
-              <img data-wipe class="dissolve-all w-full object-cover" src={fm.figure} alt={fm.figureAlt ?? ""} width="880" height="660" loading="lazy" />
+              <picture>
+                <source srcset={avif(fm.figure)} type="image/avif" />
+                <img data-wipe class="dissolve-all w-full object-cover" src={fm.figure} alt={fm.figureAlt ?? ""} width="880" height="660" loading="lazy" decoding="async" />
+              </picture>
               {fm.figureAlt && (
                 <figcaption class="mt-3 font-body text-[12px] leading-snug text-muted">{fm.figureAlt}</figcaption>
               )}
@@ -159,6 +245,19 @@ const toc = headings.filter((h) => h.depth === 2);
               </a>
             </div>
           )}
+
+          <div>
+            <p class="eyebrow mb-3">Also worth reading</p>
+            <nav class="flex flex-col">
+              {related.map((p) => (
+                <a href={`${p.url}/`} class="group border-t border-hair/60 py-3">
+                  <span class="block font-body text-sm leading-snug text-bone transition-colors group-hover:text-sage">
+                    {p.frontmatter.title}
+                  </span>
+                </a>
+              ))}
+            </nav>
+          </div>
 
           <div>
             <p class="eyebrow mb-3">Elsewhere</p>

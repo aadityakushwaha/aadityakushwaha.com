@@ -5,8 +5,8 @@ description: "Six data-loss bugs in one course editor. Five were about saving. T
 date: 2026-08-16
 status: "11 min read"
 kicker: "Audit — course editor"
-hero: "/img/doc-hero.png"
-figure: "/img/doc-fig.png"
+hero: "/img/doc-hero.webp"
+figure: "/img/doc-fig.webp"
 figureAlt: "A buffer that flushes, and a buffer whose cleanup cancels it."
 panels:
   - label: "Trust findings in the audit"

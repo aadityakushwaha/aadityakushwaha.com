@@ -5,8 +5,8 @@ description: "A fabricated zero reads as a correct extraction. So does an accura
 date: 2026-08-17
 status: "9 min read"
 kicker: "Design — document extraction"
-hero: "/img/money-hero.png"
-figure: "/img/money-fig.png"
+hero: "/img/money-hero.webp"
+figure: "/img/money-fig.webp"
 figureAlt: "Phase one matches on the key. Phase two recovers the rows whose key was misread."
 panels:
   - label: "States a money cell can be in"
