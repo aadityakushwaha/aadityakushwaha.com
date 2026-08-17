@@ -58,31 +58,33 @@ const toc = headings.filter((h) => h.depth === 2);
     </header>
 
     <!-- ====================================================== article hero -->
-    <section class="scrim relative overflow-hidden px-6 pb-10 pt-28 md:px-10 md:pt-36">
-      {fm.hero && (
-        <img
-          data-drift
-          class="dissolve pointer-events-none absolute inset-x-0 top-0 h-[130%] w-full object-cover opacity-40"
-          src={fm.hero}
-          alt=""
-          aria-hidden="true"
-          width="1376"
-          height="768"
-        />
-      )}
-      <div class="relative mx-auto max-w-[78rem]">
+    <!--
+      The headline sits on clean ground. Earlier the figure ran behind it and
+      no amount of scrim made 60px type legible over a bar chart — a plate
+      behind a headline is decoration fighting the one thing that must be read.
+      The figure gets its own band underneath, where it can be looked at.
+    -->
+    <section class="relative px-6 pb-12 pt-28 md:px-10 md:pt-40">
+      <div class="mx-auto max-w-[78rem]">
         <p data-rise class="eyebrow">{fm.kicker ?? "Writing"}</p>
-        <h1 data-rise class="legible mt-4 max-w-[20ch] font-display text-4xl font-black uppercase leading-[0.9] tracking-[-0.025em] md:text-7xl">
+        <h1 data-rise class="mt-4 max-w-[18ch] font-display text-4xl font-black uppercase leading-[0.88] tracking-[-0.025em] md:text-7xl">
           {fm.title}
         </h1>
-        <p data-rise class="legible mt-6 max-w-[56ch] font-editorial text-xl italic leading-snug text-bone md:text-2xl">
+        <p data-rise class="mt-7 max-w-[54ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
           {fm.description}
         </p>
-        <p data-rise class="mt-7 font-body text-xs uppercase tracking-[0.2em] text-muted">
+        <p data-rise class="mt-8 font-body text-xs uppercase tracking-[0.2em] text-muted">
           {shown}{fm.status ? ` · ${fm.status}` : ""} · Aaditya Kushwaha
         </p>
       </div>
     </section>
+
+    {fm.hero && (
+      <figure class="flood dissolve relative mb-4 h-[38svh] overflow-hidden md:mb-10 md:h-[52svh]">
+        <img data-drift class="h-[128%] w-full object-cover opacity-70" src={fm.hero} alt="" aria-hidden="true"
+          width="1376" height="768" />
+      </figure>
+    )}
 
     <!-- ============================================ rails + reading column -->
     <div class="mx-auto grid max-w-[78rem] gap-10 px-6 pb-24 md:px-10 lg:grid-cols-12 lg:gap-12">

@@ -184,24 +184,51 @@ ready(() => {
   if (stack) {
     const items = [...stack.querySelectorAll<HTMLElement>(".stack-item")];
     if (items.length > 1) {
+      // Measure each word once, then animate the slot's width to match as the
+      // word changes. A slot fixed to the longest word leaves a visible gap
+      // after every shorter one, which reads as broken typesetting.
+      const measure = () =>
+        items.map((el) => {
+          const prev = el.style.cssText;
+          el.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;width:auto";
+          const w = el.getBoundingClientRect().width;
+          el.style.cssText = prev;
+          // Never return 0 — a zero-width slot swallows the word entirely and
+          // the sentence reads "I build  that carry load".
+          return Math.max(Math.ceil(w) + 2, 40);
+        });
+
+      let widths = measure();
+
       items.forEach((el, i) => {
         el.style.opacity = i === 0 ? "1" : "0";
         el.style.transform = i === 0 ? "none" : "translateY(100%)";
       });
+      stack.style.width = `${widths[0]}px`;
+
+      // Webfonts land after first paint, so the first measurement is taken in
+      // the fallback face and is wrong by a few percent. Re-measure once the
+      // real face is ready.
+      document.fonts?.ready.then(() => {
+        widths = measure();
+        stack.style.width = `${widths[i]}px`;
+      });
 
       let i = 0;
-      const HOLD = 2200;
+      const HOLD = 2400;
       const step = () => {
         const cur = items[i];
-        const next = items[(i + 1) % items.length];
-        // Out and in run together — a gap between them reads as a stutter.
+        const nx = (i + 1) % items.length;
+        const next = items[nx];
+        // Out, in, and the slot resize all share one clock so the sentence
+        // reflows exactly as the word swaps rather than a beat later.
         animate(cur, { y: ["0%", "-105%"], opacity: [1, 0] }, { duration: 0.55, ease: OUT });
         animate(next, { y: ["105%", "0%"], opacity: [0, 1] }, { duration: 0.6, ease: OUT });
-        i = (i + 1) % items.length;
+        animate(stack, { width: `${widths[nx]}px` }, { duration: 0.6, ease: OUT });
+        i = nx;
       };
+
       let timer = setInterval(step, HOLD);
-      // Pause when the tab is hidden; an interval animating offscreen is pure
-      // battery cost and drifts out of sync on return.
       document.addEventListener("visibilitychange", () => {
         clearInterval(timer);
         if (!document.hidden) timer = setInterval(step, HOLD);
