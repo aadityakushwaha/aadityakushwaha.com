@@ -151,19 +151,34 @@ const now = [
   <div class="nav-fade"></div>
   <header class="fixed inset-x-0 top-0 z-50">
     <nav class="flex items-center justify-between px-6 py-5 md:px-10 xl:px-16 2xl:px-24">
-      <a href="/" class="font-display text-sm font-black tracking-tight text-bone">AK</a>
-      <div class="flex gap-5 font-body text-[11px] uppercase tracking-[0.18em] text-bone md:gap-9 md:text-xs">
-        <a href="#work" class="ul hidden sm:inline">Work</a>
-        <a href="#systems" class="ul">Systems</a>
-        <a href="#experience" class="ul hidden sm:inline">Experience</a>
-        <a href="#writing" class="ul">Writing</a>
-        <a href="#contact" class="ul">Contact</a>
+      <a href="/" class="tap font-display text-sm font-black tracking-tight text-bone">AK</a>
+      <!-- Five links do not fit a phone, and three of five is not a menu.
+           From sm up they sit inline; below it they move into a sheet. -->
+      <div class="hidden gap-5 font-body text-[11px] uppercase tracking-[0.18em] text-bone sm:flex md:gap-9 md:text-xs">
+        <a href="#work" class="ul tap">Work</a>
+        <a href="#systems" class="ul tap">Systems</a>
+        <a href="#experience" class="ul tap">Experience</a>
+        <a href="#writing" class="ul tap">Writing</a>
+        <a href="#contact" class="ul tap">Contact</a>
       </div>
+
+      <details class="menu sm:hidden" data-menu>
+        <summary class="tap font-body text-[11px] uppercase tracking-[0.2em] text-bone">
+          <span class="menu-open">Menu</span><span class="menu-close">Close</span>
+        </summary>
+        <nav class="menu-sheet">
+          <a href="#work">Work<span>01</span></a>
+          <a href="#systems">Systems<span>02</span></a>
+          <a href="#experience">Experience<span>03</span></a>
+          <a href="#writing">Writing<span>04</span></a>
+          <a href="#contact">Contact<span>05</span></a>
+        </nav>
+      </details>
     </nav>
   </header>
 
   <!-- ============================================================= hero -->
-  <section data-hero-section class="relative flex min-h-[86svh] flex-col overflow-hidden px-6 pb-6 pt-24 md:px-10 xl:px-16 2xl:px-24 md:pb-8">
+  <section data-hero-section class="relative flex min-h-[80svh] flex-col overflow-hidden px-6 pb-6 pt-24 md:min-h-[86svh] md:px-10 xl:px-16 2xl:px-24 md:pb-8">
     <!--
       The plate opens as an inset, rounded frame and expands to full bleed as
       the hero scrolls away — the container itself is the transition, so the
@@ -209,10 +224,10 @@ const now = [
 
         <!-- A live index of what is below, so the first screen already shows
              the work rather than only announcing a name. -->
-        <nav data-group class="hidden lg:col-span-4 lg:block">
+        <nav data-group class="hidden md:block lg:col-span-4">
           <p class="eyebrow mb-4">Selected systems</p>
           {systems.map((sys) => (
-            <a href="#systems" class="group flex items-baseline gap-4 border-t border-hair/60 py-2.5">
+            <a href="#systems" class="group flex items-baseline gap-4 border-t border-hair/60 py-3.5 lg:py-2.5">
               <span class="font-display text-xs font-black tabular-nums text-sage">{sys.n}</span>
               <span class="flex-1 font-body text-sm text-bone transition-colors group-hover:text-sage">{sys.name}</span>
               <span class="font-body text-[11px] uppercase tracking-[0.14em] text-muted">{sys.org}</span>
@@ -264,7 +279,7 @@ const now = [
 
 
   <!-- ============================================================ flood -->
-  <section class="flood scrim my-4 flex min-h-[56svh] items-center py-24 md:my-8 md:min-h-[62svh] md:py-28">
+  <section class="flood scrim my-4 flex min-h-[52svh] items-center py-20 md:my-8 md:py-24 lg:min-h-[62svh] lg:py-28">
     <div class="dissolve absolute inset-0 overflow-hidden">
         <img data-drift src="/img/flood-1.webp" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
       </div>
@@ -279,13 +294,13 @@ const now = [
 
   <!-- ============================================================ about -->
   <section id="work" class="px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
-    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
-      <div class="md:col-span-5">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div class="lg:col-span-5">
         <img data-wipe src="/img/about.webp" alt="Abstract schematic of a distributed backend"
           class="dissolve-all negate w-full object-cover" width="880" height="1100" loading="lazy" />
       </div>
 
-      <div class="md:col-span-7">
+      <div class="lg:col-span-7">
         <p data-rise class="font-body text-xs uppercase tracking-[0.22em] text-sage">What I actually do</p>
 
         <h2 data-reveal-text class="mt-5 font-editorial text-3xl italic leading-[1.18] md:text-5xl">
@@ -327,8 +342,8 @@ const now = [
       <span class="eyebrow">Four of them</span>
     </div>
 
-    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
-      <div class="hidden md:col-span-5 md:block">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div class="hidden lg:col-span-5 lg:block">
         <div class="dissolve-all sticky top-20 aspect-4/5">
           {systems.map((s, i) => (
             <img data-plate class="plate h-full w-full object-cover" style={i === 0 ? "opacity:1" : ""}
@@ -338,10 +353,10 @@ const now = [
         </div>
       </div>
 
-      <div class="flex flex-col gap-20 md:col-span-7 md:gap-36">
+      <div class="flex flex-col gap-20 md:gap-28 lg:col-span-7 lg:gap-36">
         {systems.map((s, i) => (
           <article data-case>
-            <img data-wipe class="dissolve-all mb-6 aspect-4/5 w-full object-cover md:hidden"
+            <img data-wipe class="dissolve-all mb-6 aspect-4/5 w-full object-cover lg:hidden"
               src={`/img/sys-0${i + 1}.webp`} alt="" width="880" height="1100" loading="lazy" />
 
             <div data-group>
@@ -373,7 +388,7 @@ const now = [
 
 
   <!-- ============================================================ flood -->
-  <section class="flood scrim my-4 flex min-h-[56svh] items-center py-24 md:my-8 md:min-h-[62svh] md:py-28">
+  <section class="flood scrim my-4 flex min-h-[52svh] items-center py-20 md:my-8 md:py-24 lg:min-h-[62svh] lg:py-28">
     <div class="dissolve absolute inset-0 overflow-hidden">
         <img data-drift src="/img/flood-3.webp" alt="" aria-hidden="true" width="1376" height="768" loading="lazy" />
       </div>
@@ -399,11 +414,11 @@ const now = [
 
       <div data-group>
         {roles.map((r) => (
-          <div class="grid gap-2 border-b border-hair py-6 md:grid-cols-12 md:gap-8">
-            <p class="font-body text-xs uppercase tabular-nums tracking-[0.16em] text-muted md:col-span-2">{r.years}</p>
-            <p class="font-display text-lg font-black uppercase tracking-tight text-bone md:col-span-3 md:text-xl">{r.org}</p>
-            <p class="font-body text-sm uppercase tracking-[0.14em] text-sage md:col-span-3">{r.title}</p>
-            <p class="font-body text-sm text-bone-dim md:col-span-4">{r.what}</p>
+          <div class="grid gap-2 border-b border-hair py-6 lg:grid-cols-12 lg:gap-8">
+            <p class="font-body text-xs uppercase tabular-nums tracking-[0.16em] text-muted lg:col-span-2">{r.years}</p>
+            <p class="font-display text-lg font-black uppercase tracking-tight text-bone lg:col-span-3 lg:text-xl">{r.org}</p>
+            <p class="font-body text-sm uppercase tracking-[0.14em] text-sage lg:col-span-3">{r.title}</p>
+            <p class="font-body text-sm text-bone-dim lg:col-span-4">{r.what}</p>
           </div>
         ))}
       </div>
@@ -417,8 +432,8 @@ const now = [
       <span class="eyebrow">Things I've shipped with</span>
     </div>
 
-    <div class="grid gap-10 md:grid-cols-12 md:gap-14">
-      <div data-group class="md:col-span-7">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div data-group class="lg:col-span-7">
         {caps.map((c) => (
           <div class="grid grid-cols-1 gap-1 border-b border-hair py-4 md:grid-cols-4 md:gap-6">
             <p class="font-body text-xs uppercase tracking-[0.18em] text-sage">{c.k}</p>
@@ -426,7 +441,7 @@ const now = [
           </div>
         ))}
       </div>
-      <div class="md:col-span-5">
+      <div class="lg:col-span-5">
         <img data-wipe src="/img/stack.webp" alt="Abstract layered infrastructure cross-section"
           class="dissolve-all negate w-full object-cover" width="1376" height="768" loading="lazy" />
       </div>
@@ -464,7 +479,7 @@ const now = [
   <section id="writing" class="px-6 py-20 md:px-10 xl:px-16 2xl:px-24 md:py-28">
     <div data-rise class="mb-10 flex items-baseline justify-between pb-4">
       <h2 class="font-display text-3xl font-black uppercase tracking-tight md:text-5xl">Writing</h2>
-      <a href="/writing/" class="ul eyebrow">All postmortems →</a>
+      <a href="/writing/" class="ul eyebrow tap">All postmortems →</a>
     </div>
 
     <p data-rise class="max-w-[58ch] font-editorial text-xl italic leading-snug text-bone-dim md:text-2xl">
@@ -553,7 +568,7 @@ const now = [
           <button type="submit" class="btn"><span data-label>Send message</span></button>
           <p class="font-body text-sm text-bone-dim">
             Or email
-            <a class="ul" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a>
+            <a class="ul tap" href="mailto:work.aadityak@gmail.com">work.aadityak@gmail.com</a>
             — I reply within a day.
           </p>
         </div>
@@ -591,8 +606,8 @@ const now = [
         <div>
           <p class="font-body text-xs uppercase tracking-[0.18em] text-muted">Elsewhere</p>
           <p class="font-body text-sm text-bone">
-            <a class="ul" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
-            <a class="ul" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="ul tap" href="https://github.com/aadityakushwaha" target="_blank" rel="noopener">GitHub</a> ·
+            <a class="ul tap" href="https://linkedin.com/in/aadityakushwaha" target="_blank" rel="noopener">LinkedIn</a>
           </p>
         </div>
       </div>

@@ -77,7 +77,35 @@ ready(() => {
     });
   }
 
-  if (reduced) return;
+  /* --------------------------------------------------------- mobile menu */
+  // A <details> element owns the open state, so the sheet toggles before this
+  // module loads and keeps its own ARIA. All that is added here is closing it
+  // once a link is taken — the anchors are on this page, so nothing else would.
+  const menu = document.querySelector<HTMLDetailsElement>("[data-menu]");
+  if (menu) {
+    menu.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) menu.open = false;
+    });
+    addEventListener("keydown", (e) => {
+      if (e.key === "Escape") menu.open = false;
+    });
+    // Rotating a phone into landscape can cross the sm breakpoint, which hides
+    // the toggle and would leave the sheet stuck open with no way out.
+    matchMedia("(min-width: 640px)").addEventListener("change", (e) => {
+      if (e.matches) menu.open = false;
+    });
+  }
+
+  if (reduced) {
+    // The counters are authored as "0" placeholders for the count-up to drive.
+    // Without motion they are simply wrong numbers, so write the real ones.
+    document.querySelectorAll<HTMLElement>("[data-num]").forEach((el) => {
+      el.textContent =
+        Number(el.getAttribute("data-num") || 0).toLocaleString("en-US") +
+        (el.getAttribute("data-suffix") || "");
+    });
+    return;
+  }
 
   /* -------------------------------------------------------- scroll-linked */
   const bar = document.querySelector<HTMLElement>("#progress");

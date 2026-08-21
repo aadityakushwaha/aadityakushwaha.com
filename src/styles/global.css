@@ -23,6 +23,9 @@
   html {
     background: var(--color-ground);
     scroll-behavior: smooth;
+    /* iOS inflates type on rotation to landscape unless told not to. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -33,6 +36,15 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
+    /* App behaviour on touch: no grey flash on tap, and no rubber-band that
+       chains through to the browser chrome behind the page. */
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+
+  /* Kills the 300ms wait for a double-tap that this page never uses. */
+  a, button, summary, label, input, textarea, select {
+    touch-action: manipulation;
   }
 
   ::selection {
@@ -66,8 +78,10 @@
   width: max-content;
   animation: slide 42s linear infinite;
 }
-.marquee:hover {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .marquee:hover {
+    animation-play-state: paused;
+  }
 }
 @keyframes slide {
   to {
@@ -98,9 +112,25 @@
   background-size: 0% 1px;
   transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.ul:hover,
 .ul:focus-visible {
   background-size: 100% 1px;
+}
+/* Gated: on touch, :hover latches after a tap and the underline never leaves. */
+@media (hover: hover) {
+  .ul:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* ------------------------------------------------------------ tap targets */
+/* A thumb needs 44px; the type here is 11px. Padding rather than font-size,
+   applied only on a coarse pointer, so the mouse layout is untouched. */
+@media (pointer: coarse) {
+  .tap {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 
 /* ------------------------------------------------------------- progress */
@@ -285,8 +315,10 @@
   line-height: 1.2em;
   white-space: nowrap;
 }
-/* Only the first is visible before Motion takes over. */
-.stack-item:not(:first-child) {
+/* Only the first is visible before Motion takes over. Sibling selector, not
+   :not(:first-child): the slot opens with an .sr-only span, so :first-child is
+   never a .stack-item and the first word was being hidden with the rest. */
+.stack-item + .stack-item {
   opacity: 0;
 }
 
@@ -306,7 +338,7 @@
   .hero-art { clip-path: none; }
   .stack { height: auto; min-width: 0; }
   .stack-item { position: static; }
-  .stack-item:not(:first-child) { display: none; }
+  .stack-item + .stack-item { display: none; }
 }
 
 /* --------------------------------------------------------------- negate */
@@ -343,7 +375,7 @@
 @media (max-width: 767px) {
   /* No room to dodge sideways on a phone — darken the whole plate instead. */
   .scrim::before {
-    background: linear-gradient(180deg, rgba(11, 12, 11, 0.72) 0%, rgba(11, 12, 11, 0.86) 100%);
+    background: linear-gradient(180deg, rgba(11, 12, 11, 0.45) 0%, rgba(11, 12, 11, 0.72) 62%, rgba(11, 12, 11, 0.9) 100%);
   }
 }
 
@@ -491,3 +523,69 @@
 .btn:hover { background: var(--color-sage); }
 .btn[disabled] { opacity: 0.55; cursor: default; }
 .btn[disabled]:hover { background: var(--color-bone); }
+
+/* ==========================================================================
+   MOBILE MENU
+   A <details> sheet rather than a scripted drawer: the browser owns the open
+   state, so it works before any JS lands and keeps its own ARIA. Script only
+   closes it once a link is taken.
+   ========================================================================== */
+.menu summary {
+  list-style: none;
+  cursor: pointer;
+  /* Above the sheet it opens, so the toggle stays the way out. */
+  position: relative;
+  z-index: 46;
+}
+.menu summary::-webkit-details-marker { display: none; }
+.menu-close { display: none; }
+.menu[open] .menu-open { display: none; }
+.menu[open] .menu-close { display: inline; }
+
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Safe-area padding is the only place it is needed: this is the one surface
+     that spans the whole screen edge to edge. */
+  padding: 5.5rem max(1.5rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom))
+    max(1.5rem, env(safe-area-inset-left));
+  background: var(--color-ground);
+  animation: sheet 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes sheet {
+  from { opacity: 0; transform: translateY(-1.25rem); }
+}
+.menu-sheet a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--color-hair);
+  padding: 1.1rem 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-size: clamp(1.9rem, 11vw, 3.25rem);
+  color: var(--color-bone);
+}
+.menu-sheet a span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--color-sage);
+}
+.menu-sheet a:active { color: var(--color-sage); }
+
+/* The page behind a full-screen sheet must not scroll under it. */
+body:has(.menu[open]) { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet { animation: none; }
+}
